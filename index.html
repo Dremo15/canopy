@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Propex — Fractional Ownership for Every Asset</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --ink:      #0e0d0b;
+  --ink2:     #1c1a16;
+  --ink3:     #2e2b24;
+  --stone:    #f4f1eb;
+  --warm:     #ede8df;
+  --line:     #d6d0c4;
+  --gold:     #c8a96e;
+  --gold2:    #e8c98a;
+  --rust:     #b85c38;
+  --sage:     #6b7c5e;
+  --text:     #3a3630;
+  --text2:    #7a7268;
+  --text3:    #a09890;
+  --mono:     'DM Mono', monospace;
+  --serif:    'Cormorant Garamond', Georgia, serif;
+  --sans:     'Syne', sans-serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html{scroll-behavior:smooth;}
+
+body{
+  background: var(--stone);
+  color: var(--text);
+  font-family: var(--serif);
+  font-size:16px;
+  overflow-x:hidden;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;
+  z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;height:64px;
+  background:rgba(244,241,235,0.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+
+.nav-logo{
+  font-family:var(--sans);font-weight:800;font-size:18px;
+  letter-spacing:3px;color:var(--ink);
+  text-transform:uppercase;
+}
+
+.nav-logo span{color:var(--gold);}
+
+.nav-links{display:flex;gap:36px;align-items:center;}
+
+.nav-links a{
+  font-family:var(--mono);font-size:11px;letter-spacing:1.5px;
+  color:var(--text2);text-decoration:none;text-transform:uppercase;
+  transition:color 0.2s;
+}
+.nav-links a:hover{color:var(--ink);}
+
+.nav-cta{
+  background:var(--ink);color:var(--stone);
+  font-family:var(--mono);font-size:11px;letter-spacing:2px;
+  padding:10px 24px;border:none;cursor:pointer;
+  text-transform:uppercase;transition:background 0.2s;
+}
+.nav-cta:hover{background:var(--ink3);}
+
+.wallet-connected{
+  background:var(--sage)!important;
+  font-size:10px;
+}
+
+/* ── HERO ── */
+#hero{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  padding-top:64px;
+  position:relative;
+  overflow:hidden;
+}
+
+.hero-left{
+  padding:80px 48px 80px 80px;
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;z-index:2;
+}
+
+.hero-tag{
+  font-family:var(--mono);font-size:11px;letter-spacing:3px;
+  color:var(--gold);text-transform:uppercase;
+  margin-bottom:32px;
+  display:flex;align-items:center;gap:10px;
+}
+
+.hero-tag::before{
+  content:'';width:32px;height:1px;background:var(--gold);
+}
+
+h1{
+  font-family:var(--sans);font-weight:800;
+  font-size:clamp(48px,5vw,72px);
+  line-height:1.0;letter-spacing:-1px;
+  color:var(--ink);margin-bottom:8px;
+}
+
+h1 em{
+  font-family:var(--serif);font-style:italic;font-weight:300;
+  color:var(--gold);
+}
+
+.hero-sub{
+  font-family:var(--serif);font-size:20px;
+  font-weight:300;color:var(--text2);
+  line-height:1.7;max-width:460px;
+  margin-top:28px;margin-bottom:48px;
+}
+
+.hero-actions{display:flex;gap:16px;align-items:center;}
+
+.btn-primary{
+  background:var(--ink);color:var(--stone);
+  font-family:var(--mono);font-size:12px;letter-spacing:2px;
+  padding:14px 36px;border:none;cursor:pointer;
+  text-transform:uppercase;transition:all 0.2s;
+}
+.btn-primary:hover{background:var(--rust);}
+
+.btn-outline{
+  background:transparent;color:var(--ink);
+  font-family:var(--mono);font-size:12px;letter-spacing:2px;
+  padding:14px 36px;border:1px solid var(--ink);cursor:pointer;
+  text-transform:uppercase;transition:all 0.2s;
+}
+.btn-outline:hover{background:var(--ink);color:var(--stone);}
+
+.hero-stats{
+  display:flex;gap:40px;margin-top:64px;
+  padding-top:40px;border-top:1px solid var(--line);
+}
+
+.hstat-val{
+  font-family:var(--sans);font-weight:700;font-size:28px;
+  color:var(--ink);line-height:1;
+}
+
+.hstat-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;
+  color:var(--text3);text-transform:uppercase;margin-top:6px;
+}
+
+/* hero right — mosaic */
+.hero-right{
+  position:relative;
+  background:var(--ink2);
+  overflow:hidden;
+}
+
+.hero-mosaic{
+  position:absolute;inset:0;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  grid-template-rows:1fr 1fr 1fr;
+  gap:2px;
+  padding:80px 40px 40px 2px;
+}
+
+.mosaic-card{
+  background:var(--ink3);
+  padding:20px;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  position:relative;overflow:hidden;
+  transition:background 0.3s;
+}
+
+.mosaic-card:hover{background:#2a2620;}
+
+.mosaic-card::before{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.6) 100%);
+}
+
+.mosaic-img{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  opacity:0.35;
+  transition:opacity 0.3s;
+}
+.mosaic-card:hover .mosaic-img{opacity:0.45;}
+
+.mosaic-content{position:relative;z-index:1;}
+
+.mosaic-class{
+  font-family:var(--mono);font-size:9px;letter-spacing:2px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:4px;
+}
+
+.mosaic-name{
+  font-family:var(--serif);font-size:14px;color:#f4f1eb;
+  font-weight:400;line-height:1.3;
+}
+
+.mosaic-yield{
+  font-family:var(--mono);font-size:11px;color:var(--sage);
+  margin-top:4px;
+}
+
+.mosaic-card.featured{
+  grid-row:span 2;
+}
+
+/* ── SECTION COMMON ── */
+section{padding:100px 80px;}
+
+.section-tag{
+  font-family:var(--mono);font-size:10px;letter-spacing:3px;
+  color:var(--gold);text-transform:uppercase;
+  margin-bottom:20px;
+  display:flex;align-items:center;gap:12px;
+}
+.section-tag::after{content:'';flex:1;height:1px;background:var(--line);}
+
+h2{
+  font-family:var(--sans);font-weight:700;
+  font-size:clamp(32px,3.5vw,48px);
+  color:var(--ink);line-height:1.1;letter-spacing:-0.5px;
+  margin-bottom:16px;
+}
+
+h2 em{
+  font-family:var(--serif);font-style:italic;font-weight:300;color:var(--gold);
+}
+
+.section-sub{
+  font-family:var(--serif);font-size:18px;font-weight:300;
+  color:var(--text2);line-height:1.8;max-width:600px;
+  margin-bottom:64px;
+}
+
+/* ── ASSET CLASSES ── */
+#classes{
+  background:var(--ink);
+  color:var(--stone);
+}
+
+#classes .section-tag{color:var(--gold);}
+#classes h2{color:var(--stone);}
+#classes .section-sub{color:#9a9288;}
+#classes .section-tag::after{background:#3a3630;}
+
+.classes-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1px;
+  background:var(--ink3);
+  border:1px solid var(--ink3);
+}
+
+.class-card{
+  background:var(--ink2);
+  padding:36px 28px;
+  transition:background 0.2s;
+  cursor:default;
+  border-bottom:3px solid transparent;
+  transition:all 0.2s;
+}
+
+.class-card:hover{
+  background:var(--ink3);
+  border-bottom-color:var(--gold);
+}
+
+.class-icon{
+  font-size:28px;margin-bottom:16px;
+  display:block;
+}
+
+.class-name{
+  font-family:var(--sans);font-weight:600;font-size:16px;
+  color:var(--stone);letter-spacing:0.5px;
+  margin-bottom:8px;
+}
+
+.class-desc{
+  font-family:var(--serif);font-size:14px;
+  color:#7a7268;line-height:1.6;
+}
+
+.class-ticker{
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;
+  color:var(--gold);margin-top:12px;
+}
+
+/* ── HOW IT WORKS ── */
+#how{background:var(--warm);}
+
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:40px;}
+
+.step{position:relative;padding-top:48px;}
+
+.step-num{
+  position:absolute;top:0;left:0;
+  font-family:var(--sans);font-weight:800;font-size:48px;
+  color:var(--line);line-height:1;
+  user-select:none;
+}
+
+.step-title{
+  font-family:var(--sans);font-weight:600;font-size:18px;
+  color:var(--ink);margin-bottom:10px;
+}
+
+.step-desc{
+  font-family:var(--serif);font-size:15px;
+  color:var(--text2);line-height:1.7;
+}
+
+.step-connector{
+  position:absolute;top:24px;right:-24px;
+  font-family:var(--mono);font-size:18px;color:var(--line);
+}
+
+/* ── DAPP ── */
+#dapp{
+  background:var(--stone);
+  padding:0;
+}
+
+.dapp-nav{
+  display:flex;
+  border-bottom:1px solid var(--line);
+  background:var(--warm);
+  padding:0 48px;
+}
+
+.dapp-tab{
+  font-family:var(--mono);font-size:11px;letter-spacing:2px;
+  color:var(--text3);text-transform:uppercase;
+  padding:18px 24px;cursor:pointer;
+  border-bottom:2px solid transparent;
+  transition:all 0.15s;background:none;border-top:none;border-left:none;border-right:none;
+}
+
+.dapp-tab:hover{color:var(--text);}
+.dapp-tab.active{color:var(--ink);border-bottom-color:var(--gold);}
+
+.dapp-body{padding:48px;}
+
+/* ── MARKETPLACE ── */
+.market-controls{
+  display:flex;gap:16px;align-items:center;
+  margin-bottom:36px;flex-wrap:wrap;
+}
+
+.filter-select{
+  background:var(--warm);border:1px solid var(--line);
+  color:var(--text);font-family:var(--mono);font-size:11px;
+  padding:8px 14px;letter-spacing:1px;outline:none;cursor:pointer;
+}
+
+.search-input{
+  background:var(--warm);border:1px solid var(--line);
+  color:var(--text);font-family:var(--mono);font-size:11px;
+  padding:8px 14px;outline:none;flex:1;min-width:200px;
+  letter-spacing:0.5px;
+}
+
+.search-input:focus,.filter-select:focus{border-color:var(--gold);}
+.search-input::placeholder{color:var(--text3);}
+
+.assets-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:2px;
+  background:var(--line);
+  border:1px solid var(--line);
+}
+
+.asset-card{
+  background:var(--stone);
+  padding:28px;
+  transition:background 0.15s;
+  cursor:pointer;
+}
+
+.asset-card:hover{background:var(--warm);}
+
+.ac-header{
+  display:flex;justify-content:space-between;
+  align-items:flex-start;margin-bottom:16px;
+}
+
+.ac-class{
+  font-family:var(--mono);font-size:9px;letter-spacing:2px;
+  color:var(--gold);text-transform:uppercase;
+  background:rgba(200,169,110,0.1);
+  padding:3px 8px;border:1px solid rgba(200,169,110,0.3);
+}
+
+.ac-status{
+  font-family:var(--mono);font-size:9px;letter-spacing:1px;
+  padding:3px 8px;text-transform:uppercase;
+}
+
+.ac-status.active{color:var(--sage);border:1px solid var(--sage);background:rgba(107,124,94,0.08);}
+.ac-status.funded{color:var(--rust);border:1px solid var(--rust);background:rgba(184,92,56,0.08);}
+.ac-status.yielding{color:var(--gold);border:1px solid var(--gold);background:rgba(200,169,110,0.08);}
+
+.ac-title{
+  font-family:var(--sans);font-weight:600;font-size:17px;
+  color:var(--ink);line-height:1.3;margin-bottom:4px;
+}
+
+.ac-location{
+  font-family:var(--mono);font-size:10px;color:var(--text3);
+  letter-spacing:1px;margin-bottom:16px;
+}
+
+.ac-progress{
+  height:3px;background:var(--line);margin-bottom:8px;
+  position:relative;overflow:hidden;
+}
+
+.ac-progress-fill{
+  height:100%;background:var(--gold);
+  transition:width 0.6s ease;
+}
+
+.ac-progress-label{
+  display:flex;justify-content:space-between;
+  font-family:var(--mono);font-size:10px;color:var(--text3);
+  margin-bottom:20px;
+}
+
+.ac-metrics{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:12px;
+  padding-top:16px;border-top:1px solid var(--line);
+}
+
+.ac-metric-val{
+  font-family:var(--sans);font-weight:600;font-size:16px;
+  color:var(--ink);
+}
+
+.ac-metric-label{
+  font-family:var(--mono);font-size:9px;letter-spacing:1px;
+  color:var(--text3);text-transform:uppercase;margin-top:3px;
+}
+
+/* ── PORTFOLIO ── */
+#tab-portfolio{display:none;}
+
+.portfolio-hero{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:2px;background:var(--line);border:1px solid var(--line);
+  margin-bottom:40px;
+}
+
+.port-stat{
+  background:var(--stone);padding:28px 24px;
+}
+
+.port-stat-val{
+  font-family:var(--sans);font-weight:700;font-size:28px;
+  color:var(--ink);line-height:1;margin-bottom:6px;
+}
+
+.port-stat-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;
+  color:var(--text3);text-transform:uppercase;
+}
+
+.port-stat-sub{
+  font-family:var(--mono);font-size:11px;color:var(--sage);
+  margin-top:4px;
+}
+
+.yield-banner{
+  background:var(--ink);color:var(--stone);
+  padding:20px 28px;
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:32px;
+}
+
+.yield-banner-left{
+  font-family:var(--serif);font-size:20px;font-weight:300;
+}
+
+.yield-banner-left strong{
+  font-family:var(--sans);font-weight:700;color:var(--gold2);
+  font-size:24px;
+}
+
+.claim-btn{
+  background:var(--gold);color:var(--ink);
+  font-family:var(--mono);font-size:11px;letter-spacing:2px;
+  padding:12px 28px;border:none;cursor:pointer;
+  text-transform:uppercase;transition:all 0.15s;
+}
+
+.claim-btn:hover{background:var(--gold2);}
+.claim-btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+.holdings-table{
+  width:100%;border-collapse:collapse;
+}
+
+.holdings-table th{
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;
+  color:var(--text3);text-transform:uppercase;
+  text-align:left;padding:10px 16px;
+  border-bottom:2px solid var(--line);
+}
+
+.holdings-table td{
+  font-family:var(--serif);font-size:15px;
+  color:var(--text);padding:14px 16px;
+  border-bottom:1px solid var(--line);
+}
+
+.holdings-table tr:hover td{background:var(--warm);}
+
+.td-mono{font-family:var(--mono);font-size:12px;}
+.td-green{color:var(--sage);font-family:var(--mono);font-size:12px;}
+.td-gold{color:var(--gold);font-family:var(--mono);font-size:12px;}
+
+/* ── GOVERNANCE ── */
+#tab-governance{display:none;}
+
+.proposals-list{display:flex;flex-direction:column;gap:2px;}
+
+.proposal-card{
+  background:var(--warm);padding:24px 28px;
+  display:grid;grid-template-columns:1fr auto;gap:24px;
+  align-items:center;transition:background 0.15s;
+  border-left:3px solid transparent;
+}
+
+.proposal-card:hover{background:var(--line);}
+.proposal-card.active-prop{border-left-color:var(--gold);}
+.proposal-card.passed-prop{border-left-color:var(--sage);}
+.proposal-card.rejected-prop{border-left-color:var(--rust);}
+
+.prop-title{
+  font-family:var(--sans);font-weight:600;font-size:16px;
+  color:var(--ink);margin-bottom:6px;
+}
+
+.prop-meta{
+  font-family:var(--mono);font-size:10px;color:var(--text3);
+  letter-spacing:1px;margin-bottom:12px;
+}
+
+.prop-bar{
+  height:4px;background:var(--line);position:relative;
+  overflow:hidden;border-radius:0;
+}
+
+.prop-for{height:100%;background:var(--sage);position:absolute;left:0;top:0;}
+.prop-against{height:100%;background:var(--rust);position:absolute;right:0;top:0;}
+
+.prop-votes{
+  display:flex;justify-content:space-between;
+  font-family:var(--mono);font-size:10px;margin-top:6px;
+}
+
+.prop-actions{display:flex;flex-direction:column;gap:8px;align-items:flex-end;}
+
+.vote-btn{
+  font-family:var(--mono);font-size:10px;letter-spacing:1.5px;
+  padding:8px 20px;cursor:pointer;text-transform:uppercase;
+  transition:all 0.15s;
+}
+
+.vote-for{background:transparent;border:1px solid var(--sage);color:var(--sage);}
+.vote-for:hover{background:var(--sage);color:white;}
+.vote-against{background:transparent;border:1px solid var(--rust);color:var(--rust);}
+.vote-against:hover{background:var(--rust);color:white;}
+
+/* ── LIST ASSET ── */
+#tab-list{display:none;}
+
+.list-form{
+  max-width:720px;
+  display:grid;grid-template-columns:1fr 1fr;gap:20px;
+}
+
+.form-field{display:flex;flex-direction:column;gap:6px;}
+.form-field.full{grid-column:1/-1;}
+
+.form-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;
+  color:var(--text3);text-transform:uppercase;
+}
+
+.form-input,.form-select,.form-textarea{
+  background:var(--warm);border:1px solid var(--line);
+  color:var(--text);font-family:var(--mono);font-size:12px;
+  padding:10px 14px;outline:none;transition:border-color 0.15s;
+}
+
+.form-input:focus,.form-select:focus,.form-textarea:focus{
+  border-color:var(--gold);
+}
+
+.form-textarea{resize:vertical;min-height:80px;font-family:var(--serif);font-size:14px;}
+.form-select option{background:var(--warm);}
+
+.form-hint{font-family:var(--mono);font-size:10px;color:var(--text3);}
+
+.submit-asset-btn{
+  grid-column:1/-1;
+  background:var(--ink);color:var(--stone);
+  font-family:var(--mono);font-size:12px;letter-spacing:2px;
+  padding:14px 40px;border:none;cursor:pointer;
+  text-transform:uppercase;transition:background 0.2s;
+  align-self:start;justify-self:start;
+}
+
+.submit-asset-btn:hover{background:var(--rust);}
+
+/* ── BUY MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(14,13,11,0.7);
+  z-index:200;display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(4px);
+}
+
+.modal-overlay.open{display:flex;}
+
+.modal{
+  background:var(--stone);
+  max-width:480px;width:100%;
+  border:1px solid var(--line);
+  box-shadow:0 32px 80px rgba(0,0,0,0.2);
+}
+
+.modal-header{
+  padding:28px 32px 20px;
+  border-bottom:1px solid var(--line);
+}
+
+.modal-title{
+  font-family:var(--sans);font-weight:700;font-size:20px;
+  color:var(--ink);margin-bottom:4px;
+}
+
+.modal-subtitle{
+  font-family:var(--mono);font-size:10px;letter-spacing:1.5px;
+  color:var(--text3);text-transform:uppercase;
+}
+
+.modal-body{padding:28px 32px;}
+
+.modal-row{
+  display:flex;justify-content:space-between;
+  align-items:center;padding:10px 0;
+  border-bottom:1px solid var(--line);
+}
+
+.modal-row:last-child{border-bottom:none;}
+
+.modal-row-label{
+  font-family:var(--mono);font-size:11px;letter-spacing:1px;
+  color:var(--text3);text-transform:uppercase;
+}
+
+.modal-row-val{
+  font-family:var(--mono);font-size:13px;color:var(--ink);
+  font-weight:500;
+}
+
+.fraction-input-row{
+  display:flex;align-items:center;gap:12px;
+  margin:20px 0;
+}
+
+.fraction-input{
+  flex:1;background:var(--warm);border:1px solid var(--line);
+  color:var(--ink);font-family:var(--mono);font-size:18px;
+  font-weight:500;padding:12px 16px;outline:none;text-align:center;
+}
+
+.fraction-input:focus{border-color:var(--gold);}
+
+.frac-adj{
+  background:transparent;border:1px solid var(--line);
+  color:var(--text);font-size:18px;
+  width:40px;height:40px;cursor:pointer;
+  transition:all 0.15s;
+}
+
+.frac-adj:hover{border-color:var(--gold);color:var(--gold);}
+
+.modal-total{
+  background:var(--ink);color:var(--stone);
+  padding:16px 20px;
+  display:flex;justify-content:space-between;align-items:center;
+  margin:16px 0;
+}
+
+.modal-total-label{font-family:var(--mono);font-size:11px;letter-spacing:1px;color:#9a9288;}
+.modal-total-val{font-family:var(--sans);font-weight:700;font-size:20px;color:var(--gold2);}
+
+.modal-actions{display:flex;gap:12px;}
+
+.modal-cancel{
+  flex:1;background:transparent;color:var(--text2);
+  font-family:var(--mono);font-size:11px;letter-spacing:1.5px;
+  padding:13px;border:1px solid var(--line);cursor:pointer;
+  text-transform:uppercase;transition:all 0.15s;
+}
+
+.modal-cancel:hover{border-color:var(--text);color:var(--text);}
+
+.modal-confirm{
+  flex:2;background:var(--ink);color:var(--stone);
+  font-family:var(--mono);font-size:11px;letter-spacing:2px;
+  padding:13px;border:none;cursor:pointer;
+  text-transform:uppercase;transition:background 0.15s;
+}
+
+.modal-confirm:hover{background:var(--rust);}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--ink);color:#5a5248;
+  padding:60px 80px;
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;
+}
+
+.footer-logo{
+  font-family:var(--sans);font-weight:800;font-size:22px;
+  letter-spacing:3px;color:var(--stone);
+  text-transform:uppercase;margin-bottom:12px;
+}
+
+.footer-logo span{color:var(--gold);}
+
+.footer-tagline{
+  font-family:var(--serif);font-size:15px;
+  color:#7a7268;line-height:1.6;max-width:260px;
+}
+
+.footer-col-title{
+  font-family:var(--mono);font-size:10px;letter-spacing:3px;
+  color:var(--gold);text-transform:uppercase;
+  margin-bottom:20px;
+}
+
+.footer-links{display:flex;flex-direction:column;gap:10px;}
+
+.footer-links a{
+  font-family:var(--serif);font-size:14px;
+  color:#5a5248;text-decoration:none;transition:color 0.15s;
+}
+.footer-links a:hover{color:var(--stone);}
+
+.footer-bottom{
+  background:var(--ink2);
+  padding:20px 80px;
+  display:flex;justify-content:space-between;
+  font-family:var(--mono);font-size:10px;letter-spacing:1px;
+  color:#3a3630;
+}
+
+/* ── NOTIFICATIONS ── */
+#notif-bar{
+  position:fixed;bottom:32px;right:32px;
+  z-index:300;display:flex;flex-direction:column;gap:8px;align-items:flex-end;
+}
+
+.notif{
+  background:var(--ink);color:var(--stone);
+  font-family:var(--mono);font-size:11px;letter-spacing:1px;
+  padding:12px 20px;
+  border-left:3px solid var(--gold);
+  animation:nIn 0.3s ease, nOut 0.4s ease 3.6s forwards;
+  box-shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+
+.notif.success{border-left-color:var(--sage);}
+.notif.error{border-left-color:var(--rust);}
+
+@keyframes nIn  {from{opacity:0;transform:translateX(24px);}to{opacity:1;transform:translateX(0);}}
+@keyframes nOut {to{opacity:0;transform:translateX(24px);}}
+
+/* ── SCROLL ANIMATIONS ── */
+.reveal{opacity:0;transform:translateY(24px);transition:all 0.7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ── RESPONSIVE (basic) ── */
+@media(max-width:1100px){
+  #hero{grid-template-columns:1fr;}
+  .hero-right{display:none;}
+  .classes-grid{grid-template-columns:repeat(2,1fr);}
+  footer{grid-template-columns:1fr 1fr;}
+  .steps{grid-template-columns:repeat(2,1fr);}
+}
+
+@media(max-width:700px){
+  nav{padding:0 20px;}
+  section{padding:60px 24px;}
+  .hero-left{padding:60px 24px;}
+  .dapp-body{padding:24px;}
+  footer{padding:40px 24px;grid-template-columns:1fr;}
+  .footer-bottom{padding:16px 24px;}
+  .portfolio-hero{grid-template-columns:1fr 1fr;}
+  .list-form{grid-template-columns:1fr;}
+  .list-form .form-field.full{grid-column:1;}
+  .modal{margin:0 16px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NOTIFICATIONS ═══ -->
+<div id="notif-bar"></div>
+
+<!-- ═══ BUY MODAL ═══ -->
+<div class="modal-overlay" id="buy-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-asset-title">—</div>
+      <div class="modal-subtitle" id="modal-asset-class">—</div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-row">
+        <span class="modal-row-label">Price / Fraction</span>
+        <span class="modal-row-val" id="modal-fraction-price">—</span>
+      </div>
+      <div class="modal-row">
+        <span class="modal-row-label">Available</span>
+        <span class="modal-row-val" id="modal-available">—</span>
+      </div>
+      <div class="modal-row">
+        <span class="modal-row-label">Annual Yield</span>
+        <span class="modal-row-val" id="modal-yield">—</span>
+      </div>
+      <div class="fraction-input-row">
+        <button class="frac-adj" onclick="adjFrac(-10)">−</button>
+        <input class="fraction-input" id="frac-count" type="number" min="1" value="10" oninput="updateTotal()"/>
+        <button class="frac-adj" onclick="adjFrac(10)">+</button>
+      </div>
+      <div class="modal-total">
+        <span class="modal-total-label">TOTAL COST</span>
+        <span class="modal-total-val" id="modal-total">0 CNPY</span>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="closeModal()">CANCEL</button>
+        <button class="modal-confirm" onclick="confirmBuy()">BUY FRACTIONS</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <div class="nav-logo">PROP<span>EX</span></div>
+  <div class="nav-links">
+    <a href="#classes">ASSETS</a>
+    <a href="#how">HOW IT WORKS</a>
+    <a href="#dapp">MARKETPLACE</a>
+    <a href="#dapp" onclick="switchTab('tab-governance')">GOVERNANCE</a>
+  </div>
+  <button class="nav-cta" id="wallet-btn" onclick="connectWallet()">CONNECT WALLET</button>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-tag">Built on Canopy Network · $PPX</div>
+    <h1>Own a slice of<br/><em>everything</em><br/>real.</h1>
+    <p class="hero-sub">
+      Propex fractionalizes any real-world asset — property, art, commodities, equity — into tradeable onchain shares. Earn yield, trade freely, vote on asset decisions.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="scrollToDapp()">EXPLORE ASSETS</button>
+      <button class="btn-outline" onclick="switchTab('tab-list');scrollToDapp()">LIST AN ASSET</button>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="hstat-val" id="hs-tvl">$0</div>
+        <div class="hstat-label">Total Value Locked</div>
+      </div>
+      <div>
+        <div class="hstat-val" id="hs-assets">0</div>
+        <div class="hstat-label">Assets Tokenized</div>
+      </div>
+      <div>
+        <div class="hstat-val" id="hs-yield">0%</div>
+        <div class="hstat-label">Avg Annual Yield</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-mosaic" id="hero-mosaic">
+      <!-- populated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ASSET CLASSES ═══ -->
+<section id="classes">
+  <div class="section-tag">Asset Coverage</div>
+  <h2>Every asset class,<br/><em>one protocol.</em></h2>
+  <p class="section-sub">From Manhattan penthouses to Picasso prints — if it has value, Propex can fractionalize it.</p>
+
+  <div class="classes-grid">
+    <div class="class-card">
+      <span class="class-icon">🏢</span>
+      <div class="class-name">Commercial Real Estate</div>
+      <div class="class-desc">Office towers, retail centers, logistics hubs — own a piece of income-producing commercial property globally.</div>
+      <div class="class-ticker">RE-COMMERCIAL</div>
+    </div>
+    <div class="class-card">
+      <span class="class-icon">🏠</span>
+      <div class="class-name">Residential Property</div>
+      <div class="class-desc">Apartments, villas, student housing. Earn rental yield without the landlord headaches.</div>
+      <div class="class-ticker">RE-RESIDENTIAL</div>
+    </div>
+    <div class="class-card">
+      <span class="class-icon">🎨</span>
+      <div class="class-name">Fine Art & Collectibles</div>
+      <div class="class-desc">Blue-chip artworks, rare collectibles, and cultural assets — previously accessible only to the ultra-wealthy.</div>
+      <div class="class-ticker">ART</div>
+    </div>
+    <div class="class-card">
+      <span class="class-icon">⚡</span>
+      <div class="class-name">Commodities</div>
+      <div class="class-desc">Gold, silver, oil, agricultural assets. Hold tokenized exposure to physical commodities on-chain.</div>
+      <div class="class-ticker">COMMODITY</div>
+    </div>
+    <div class="class-card">
+      <span class="class-icon">📈</span>
+      <div class="class-name">Private Equity</div>
+      <div class="class-desc">Pre-IPO companies, private funds, venture stakes. Democratizing access to private market returns.</div>
+      <div class="class-ticker">EQUITY</div>
+    </div>
+    <div class="class-card">
+      <span class="class-icon">🌉</span>
+      <div class="class-name">Infrastructure</div>
+      <div class="class-desc">Toll roads, solar farms, data centers, ports. Long-duration yield from essential global infrastructure.</div>
+      <div class="class-ticker">INFRA</div>
+    </div>
+    <div class="class-card">
+      <span class="class-icon">💎</span>
+      <div class="class-name">Luxury Assets</div>
+      <div class="class-desc">Classic cars, watches, fine wine, jewelry. Tangible stores of value with historically strong appreciation.</div>
+      <div class="class-ticker">LUXURY</div>
+    </div>
+    <div class="class-card">
+      <span class="class-icon">🔗</span>
+      <div class="class-name">Other RWAs</div>
+      <div class="class-desc">Any real-world asset with verifiable value can be submitted for tokenization on the Propex protocol.</div>
+      <div class="class-ticker">OTHER</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section id="how">
+  <div class="section-tag">Protocol Mechanics</div>
+  <h2>Four steps to<br/><em>fractional ownership.</em></h2>
+  <p class="section-sub">A transparent, onchain process from asset listing to yield distribution.</p>
+
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-num">01</div>
+      <div class="step-title">Asset Listing</div>
+      <div class="step-desc">Asset owners submit real-world assets with documentation, valuation, and yield parameters. The Propex DAO reviews and approves listings onchain.</div>
+    </div>
+    <div class="step reveal" style="transition-delay:0.1s">
+      <div class="step-num">02</div>
+      <div class="step-title">Fractionalization</div>
+      <div class="step-desc">Approved assets are tokenized into a configurable number of fractions, each representing a proportional claim on the underlying asset and its yield.</div>
+    </div>
+    <div class="step reveal" style="transition-delay:0.2s">
+      <div class="step-num">03</div>
+      <div class="step-title">Trade & Hold</div>
+      <div class="step-desc">Buy fractions directly from the pool or via the secondary market. Sell anytime. All trades are settled onchain in CNPY with a 1.5% platform fee.</div>
+    </div>
+    <div class="step reveal" style="transition-delay:0.3s">
+      <div class="step-num">04</div>
+      <div class="step-title">Earn & Govern</div>
+      <div class="step-desc">Collect proportional yield distributions from asset revenue. Vote on governance proposals — your fraction count = your voting weight.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DAPP ═══ -->
+<section id="dapp" style="padding:0;">
+  <div class="dapp-nav">
+    <button class="dapp-tab active" onclick="switchTab('tab-market')">Marketplace</button>
+    <button class="dapp-tab" onclick="switchTab('tab-portfolio')">My Portfolio</button>
+    <button class="dapp-tab" onclick="switchTab('tab-governance')">Governance</button>
+    <button class="dapp-tab" onclick="switchTab('tab-list')">List Asset</button>
+  </div>
+
+  <!-- MARKETPLACE -->
+  <div class="dapp-body" id="tab-market">
+    <div class="market-controls">
+      <input class="search-input" placeholder="Search assets..." oninput="filterAssets(this.value)"/>
+      <select class="filter-select" onchange="filterByClass(this.value)" id="class-filter">
+        <option value="">All Classes</option>
+        <option value="real_estate_residential">Residential</option>
+        <option value="real_estate_commercial">Commercial</option>
+        <option value="art">Art</option>
+        <option value="commodities">Commodities</option>
+        <option value="equity">Equity</option>
+        <option value="infrastructure">Infrastructure</option>
+        <option value="collectibles">Collectibles</option>
+      </select>
+      <select class="filter-select" onchange="filterByStatus(this.value)">
+        <option value="">All Status</option>
+        <option value="active">Active</option>
+        <option value="fully_funded">Funded</option>
+        <option value="yielding">Yielding</option>
+      </select>
+    </div>
+    <div class="assets-grid" id="assets-grid">
+      <!-- populated by JS -->
+    </div>
+  </div>
+
+  <!-- PORTFOLIO -->
+  <div class="dapp-body" id="tab-portfolio" style="display:none">
+    <div class="portfolio-hero">
+      <div class="port-stat">
+        <div class="port-stat-val" id="port-val">$0.00</div>
+        <div class="port-stat-label">Portfolio Value</div>
+      </div>
+      <div class="port-stat">
+        <div class="port-stat-val" id="port-yield">0 CNPY</div>
+        <div class="port-stat-label">Total Yield Earned</div>
+        <div class="port-stat-sub">All time</div>
+      </div>
+      <div class="port-stat">
+        <div class="port-stat-val" id="port-assets">0</div>
+        <div class="port-stat-label">Assets Held</div>
+      </div>
+      <div class="port-stat">
+        <div class="port-stat-val" id="port-fractions">0</div>
+        <div class="port-stat-label">Total Fractions</div>
+      </div>
+    </div>
+
+    <div class="yield-banner">
+      <div class="yield-banner-left">
+        Unclaimed yield: <strong id="unclaimed-yield">0 CNPY</strong>
+      </div>
+      <button class="claim-btn" id="claim-btn" onclick="claimYield()">CLAIM YIELD</button>
+    </div>
+
+    <table class="holdings-table">
+      <thead>
+        <tr>
+          <th>Asset</th>
+          <th>Class</th>
+          <th>Fractions</th>
+          <th>Value</th>
+          <th>Yield Rate</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="holdings-tbody">
+        <tr><td colspan="6" style="text-align:center;color:var(--text3);font-family:var(--mono);font-size:12px;padding:40px;">
+          Connect wallet to view portfolio
+        </td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- GOVERNANCE -->
+  <div class="dapp-body" id="tab-governance" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;">
+      <div>
+        <h2 style="font-size:28px;margin-bottom:4px;">Active <em>Proposals</em></h2>
+        <p style="font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:1px;">FRACTION-WEIGHTED VOTING · 10% QUORUM REQUIRED</p>
+      </div>
+      <button class="btn-primary" onclick="showNewProposal()">+ NEW PROPOSAL</button>
+    </div>
+    <div class="proposals-list" id="proposals-list">
+      <!-- populated by JS -->
+    </div>
+  </div>
+
+  <!-- LIST ASSET -->
+  <div class="dapp-body" id="tab-list" style="display:none">
+    <h2 style="font-size:28px;margin-bottom:8px;">List an <em>Asset</em></h2>
+    <p class="section-sub" style="margin-bottom:40px;font-size:16px;">
+      Submit any real-world asset for fractional tokenization on Canopy. Your submission will be reviewed by the Propex DAO.
+    </p>
+    <div class="list-form">
+      <div class="form-field">
+        <label class="form-label">Asset Title</label>
+        <input class="form-input" id="lf-title" placeholder="e.g. Midtown Manhattan Office Tower"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Asset Class</label>
+        <select class="form-select" id="lf-class">
+          <option value="real_estate_commercial">Commercial Real Estate</option>
+          <option value="real_estate_residential">Residential Property</option>
+          <option value="art">Fine Art & Collectibles</option>
+          <option value="commodities">Commodities</option>
+          <option value="equity">Private Equity</option>
+          <option value="infrastructure">Infrastructure</option>
+          <option value="collectibles">Collectibles</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-field full">
+        <label class="form-label">Description</label>
+        <textarea class="form-textarea" id="lf-desc" placeholder="Describe the asset, its revenue model, and investment thesis..."></textarea>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Location / Identifier</label>
+        <input class="form-input" id="lf-location" placeholder="e.g. 123 Park Ave, New York, NY"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Total Asset Value (USD)</label>
+        <input class="form-input" id="lf-value" type="number" placeholder="e.g. 5000000"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Total Fractions</label>
+        <input class="form-input" id="lf-fractions" type="number" placeholder="e.g. 10000"/>
+        <span class="form-hint">100 – 1,000,000</span>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Fraction Price (CNPY)</label>
+        <input class="form-input" id="lf-price" type="number" placeholder="e.g. 10"/>
+        <span class="form-hint">Minimum 0.1 CNPY</span>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Annual Yield Rate (%)</label>
+        <input class="form-input" id="lf-yield" type="number" placeholder="e.g. 7.5"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Yield Distribution (blocks)</label>
+        <input class="form-input" id="lf-period" type="number" value="8640" placeholder="8640 = ~daily"/>
+        <span class="form-hint">~8640 blocks per day on Canopy</span>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Metadata URI (IPFS)</label>
+        <input class="form-input" id="lf-meta" placeholder="ipfs://..."/>
+      </div>
+      <div class="form-field full" style="margin-top:8px;">
+        <button class="submit-asset-btn" onclick="submitAsset()">SUBMIT FOR REVIEW</button>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div>
+    <div class="footer-logo">PROP<span>EX</span></div>
+    <p class="footer-tagline">Fractional ownership for every asset class. Built on Canopy Network.</p>
+  </div>
+  <div>
+    <div class="footer-col-title">Protocol</div>
+    <div class="footer-links">
+      <a href="#">Documentation</a>
+      <a href="#">Plugin Source</a>
+      <a href="#">Canopy Network</a>
+      <a href="#">Audit Report</a>
+    </div>
+  </div>
+  <div>
+    <div class="footer-col-title">Assets</div>
+    <div class="footer-links">
+      <a href="#">Real Estate</a>
+      <a href="#">Art & Collectibles</a>
+      <a href="#">Commodities</a>
+      <a href="#">Infrastructure</a>
+    </div>
+  </div>
+  <div>
+    <div class="footer-col-title">Community</div>
+    <div class="footer-links">
+      <a href="#">Discord</a>
+      <a href="#">Twitter / X</a>
+      <a href="#">Governance Forum</a>
+      <a href="#">GitHub</a>
+    </div>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>© 2026 Propex Protocol · $PPX · Built on Canopy Network</span>
+  <span style="font-family:var(--mono)">NOT FINANCIAL ADVICE · DYOR</span>
+</div>
+
+<script>
+// ─── DATA (mock assets for demo) ───────────────────────────
+const MOCK_ASSETS = [
+  {
+    id:'ppx-a1',title:'Midtown Manhattan Office Tower',
+    assetClass:'real_estate_commercial',location:'123 Park Ave, New York, NY',
+    totalValue:5000000_00,totalFractions:10000,fractionPrice:500_000_000,
+    soldFractions:7840,yieldRate:650,status:'yielding',
+    description:'Class-A commercial office building in Midtown Manhattan. Fully leased to Fortune 500 tenants.'
+  },
+  {
+    id:'ppx-a2',title:'Barcelona Beachfront Apartments',
+    assetClass:'real_estate_residential',location:'Barceloneta, Barcelona, Spain',
+    totalValue:1200000_00,totalFractions:5000,fractionPrice:240_000_000,
+    soldFractions:3100,yieldRate:820,status:'active',
+    description:'12-unit residential complex in Barcelona\'s premier beachfront neighborhood. Short-term rental income.'
+  },
+  {
+    id:'ppx-a3',title:'Basquiat "Untitled" 1982',
+    assetClass:'art',location:'Secured Vault, Geneva, CH',
+    totalValue:18000000_00,totalFractions:100000,fractionPrice:180_000_000,
+    soldFractions:100000,yieldRate:300,status:'fully_funded',
+    description:'Authenticated Jean-Michel Basquiat canvas from his seminal 1982 period. Certificate of authenticity on IPFS.'
+  },
+  {
+    id:'ppx-a4',title:'Texas Solar Farm — 80MW',
+    assetClass:'infrastructure',location:'Pecos County, Texas, USA',
+    totalValue:32000000_00,totalFractions:50000,fractionPrice:640_000_000,
+    soldFractions:28900,yieldRate:920,status:'yielding',
+    description:'Operational 80-megawatt solar installation with 20-year PPA with utility provider. Stable cash flows.'
+  },
+  {
+    id:'ppx-a5',title:'Series A: NeuroTech Startup Stake',
+    assetClass:'equity',location:'San Francisco, CA',
+    totalValue:500000_00,totalFractions:2000,fractionPrice:250_000_000,
+    soldFractions:800,yieldRate:0,status:'active',
+    description:'2.5% equity stake in a pre-IPO AI neurotechnology company valued at $20M at Series A.'
+  },
+  {
+    id:'ppx-a6',title:'1kg LBMA Gold Bar Portfolio',
+    assetClass:'commodities',location:'Brink\'s Vault, Singapore',
+    totalValue:80000_00,totalFractions:1000,fractionPrice:80_000_000,
+    soldFractions:1000,yieldRate:0,status:'fully_funded',
+    description:'Physically allocated LBMA-certified 1kg gold bars held in insured Brink\'s secure storage.'
+  },
+];
+
+const MOCK_PROPOSALS = [
+  {
+    id:'prop-a1-001',assetId:'ppx-a1',status:'active',
+    title:'Lease Renegotiation — Floor 12-18',
+    description:'Propose engaging CBRE to renegotiate leases on floors 12-18 ahead of 2026 expiry to lock in higher rates.',
+    votesFor:5200,votesAgainst:1100,totalFractions:7840,
+    expiresAtBlock:502016,
+  },
+  {
+    id:'prop-a4-001',assetId:'ppx-a4',status:'passed',
+    title:'Expand Solar Capacity by 20MW',
+    description:'Allocate 8% of accumulated yield to fund a 20MW expansion, increasing annual revenue by est. $2.1M.',
+    votesFor:22000,votesAgainst:4800,totalFractions:28900,
+    expiresAtBlock:499000,
+  },
+  {
+    id:'prop-a2-001',assetId:'ppx-a2',status:'active',
+    title:'Switch to Long-Term Rental Model',
+    description:'Transition units from Airbnb (high maintenance) to 12-month leases for more predictable yield.',
+    votesFor:1400,votesAgainst:900,totalFractions:3100,
+    expiresAtBlock:503500,
+  },
+];
+
+// ─── STATE ─────────────────────────────────────────────────
+const APP = {
+  walletAddress: null,
+  walletBalance: 0,
+  portfolio: {},
+  unclaimedYield: 0,
+  activeModal: null,
+  selectedAsset: null,
+  assets: [...MOCK_ASSETS],
+  filteredAssets: [...MOCK_ASSETS],
+  classFilter: '',
+  statusFilter: '',
+  searchFilter: '',
+};
+
+const CANOPY_RPC = 'http://localhost:50832';
+const PLUGIN_ID  = 'propex-rwa-v1';
+
+// ─── INIT ──────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  renderHeroStats();
+  renderHeroMosaic();
+  renderAssets();
+  renderProposals();
+  initScrollReveal();
+  animateHeroStats();
+});
+
+// ─── WALLET ────────────────────────────────────────────────
+async function connectWallet() {
+  if (APP.walletAddress) return;
+  showNotif('Connecting wallet...');
+  await sleep(700);
+
+  APP.walletAddress = 'cnpy1' + randomHex(38);
+  APP.walletBalance = +(Math.random() * 8000 + 500).toFixed(2);
+
+  // Give mock portfolio
+  APP.portfolio = {
+    'ppx-a1': 120,
+    'ppx-a4': 50,
+    'ppx-a2': 30,
+  };
+  APP.unclaimedYield = +(Math.random() * 200 + 10).toFixed(4);
+
+  const btn = document.getElementById('wallet-btn');
+  btn.textContent = APP.walletAddress.slice(0,12) + '...';
+  btn.classList.add('wallet-connected');
+
+  showNotif('Wallet connected', 'success');
+  refreshPortfolio();
+}
+
+// ─── HERO ──────────────────────────────────────────────────
+function renderHeroStats() {
+  const tvl = MOCK_ASSETS.reduce((s,a) => s + (a.soldFractions * a.fractionPrice / 1e6 / 1e6), 0);
+  const avgYield = MOCK_ASSETS.filter(a=>a.yieldRate>0).reduce((s,a)=>s+a.yieldRate,0)
+    / MOCK_ASSETS.filter(a=>a.yieldRate>0).length / 100;
+  document.getElementById('hs-tvl').textContent = '$' + tvl.toLocaleString('en-US',{maximumFractionDigits:0});
+  document.getElementById('hs-assets').textContent = MOCK_ASSETS.length;
+  document.getElementById('hs-yield').textContent = avgYield.toFixed(1) + '%';
+}
+
+function animateHeroStats() {
+  // Simple count-up
+  ['hs-tvl','hs-assets','hs-yield'].forEach(id => {
+    const el = document.getElementById(id);
+    const target = el.textContent;
+    el.style.opacity = '0';
+    setTimeout(() => {
+      el.style.transition = 'opacity 0.6s';
+      el.style.opacity = '1';
+    }, 300);
+  });
+}
+
+const MOSAIC_COLORS = ['#1a2438','#1c1a16','#1a2020','#221a1a','#1a1a22'];
+
+function renderHeroMosaic() {
+  const m = document.getElementById('hero-mosaic');
+  const items = [
+    {name:'Manhattan Office Tower',cls:'COMMERCIAL RE',yield:'6.5%',feat:true},
+    {name:'Barcelona Apartments',cls:'RESIDENTIAL',yield:'8.2%'},
+    {name:'Basquiat 1982',cls:'FINE ART',yield:'3.0%'},
+    {name:'Texas Solar 80MW',cls:'INFRASTRUCTURE',yield:'9.2%'},
+    {name:'NeuroTech Stake',cls:'EQUITY',yield:'—'},
+  ];
+  m.innerHTML = items.map((it,i) => `
+    <div class="mosaic-card ${it.feat?'featured':''}" style="background:${MOSAIC_COLORS[i%5]}">
+      <div class="mosaic-img" style="background-image:linear-gradient(135deg,${MOSAIC_COLORS[i%5]} 0%,#0a1015 100%)"></div>
+      <div class="mosaic-content">
+        <div class="mosaic-class">${it.cls}</div>
+        <div class="mosaic-name">${it.name}</div>
+        <div class="mosaic-yield">${it.yield !== '—' ? '↑ ' + it.yield + ' / yr' : 'Capital Appreciation'}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ─── MARKETPLACE ───────────────────────────────────────────
+function renderAssets() {
+  const grid = document.getElementById('assets-grid');
+  const list = APP.filteredAssets;
+
+  if (list.length === 0) {
+    grid.innerHTML = '<div style="padding:60px;text-align:center;color:var(--text3);font-family:var(--mono);font-size:12px;grid-column:1/-1;">No assets found</div>';
+    return;
+  }
+
+  grid.innerHTML = list.map(a => {
+    const pct = Math.round((a.soldFractions / a.totalFractions) * 100);
+    const priceFormatted = (a.fractionPrice / 1e6).toFixed(2) + ' CNPY';
+    const totalVal = '$' + (a.totalValue / 100).toLocaleString('en-US',{maximumFractionDigits:0});
+    const yieldStr = a.yieldRate > 0 ? (a.yieldRate/100).toFixed(1) + '%' : 'Capital';
+    const statusMap = {active:'active',fully_funded:'funded',yielding:'yielding',pending_review:'pending'};
+    const cls = a.assetClass.replace('_',' ').replace('real estate','Real Estate').toUpperCase();
+
+    return `
+      <div class="asset-card" onclick="openBuyModal('${a.id}')">
+        <div class="ac-header">
+          <span class="ac-class">${cls}</span>
+          <span class="ac-status ${statusMap[a.status]||''}">${a.status.replace('_',' ')}</span>
+        </div>
+        <div class="ac-title">${a.title}</div>
+        <div class="ac-location">📍 ${a.location}</div>
+        <div class="ac-progress">
+          <div class="ac-progress-fill" style="width:${pct}%"></div>
+        </div>
+        <div class="ac-progress-label">
+          <span>${a.soldFractions.toLocaleString()} sold</span>
+          <span>${pct}% funded</span>
+        </div>
+        <div class="ac-metrics">
+          <div>
+            <div class="ac-metric-val">${priceFormatted}</div>
+            <div class="ac-metric-label">/ Fraction</div>
+          </div>
+          <div>
+            <div class="ac-metric-val">${yieldStr}</div>
+            <div class="ac-metric-label">Ann. Yield</div>
+          </div>
+          <div>
+            <div class="ac-metric-val">${totalVal}</div>
+            <div class="ac-metric-label">Asset Value</div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function filterAssets(q) {
+  APP.searchFilter = q.toLowerCase();
+  applyFilters();
+}
+
+function filterByClass(cls) {
+  APP.classFilter = cls;
+  applyFilters();
+}
+
+function filterByStatus(s) {
+  APP.statusFilter = s;
+  applyFilters();
+}
+
+function applyFilters() {
+  APP.filteredAssets = APP.assets.filter(a => {
+    const q = APP.searchFilter;
+    const matchQ = !q || a.title.toLowerCase().includes(q) || a.location.toLowerCase().includes(q);
+    const matchClass = !APP.classFilter || a.assetClass === APP.classFilter;
+    const matchStatus = !APP.statusFilter || a.status === APP.statusFilter;
+    return matchQ && matchClass && matchStatus;
+  });
+  renderAssets();
+}
+
+// ─── BUY MODAL ─────────────────────────────────────────────
+function openBuyModal(assetId) {
+  const a = APP.assets.find(x => x.id === assetId);
+  if (!a) return;
+  APP.selectedAsset = a;
+
+  document.getElementById('modal-asset-title').textContent = a.title;
+  document.getElementById('modal-asset-class').textContent = a.assetClass.replace(/_/g,' ').toUpperCase();
+  document.getElementById('modal-fraction-price').textContent = (a.fractionPrice/1e6).toFixed(2) + ' CNPY';
+  document.getElementById('modal-available').textContent = (a.totalFractions - a.soldFractions).toLocaleString() + ' fractions';
+  document.getElementById('modal-yield').textContent = a.yieldRate > 0 ? (a.yieldRate/100).toFixed(1)+'% per year' : 'Capital appreciation';
+  document.getElementById('frac-count').value = 10;
+  updateTotal();
+  document.getElementById('buy-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('buy-modal').classList.remove('open');
+  APP.selectedAsset = null;
+}
+
+function adjFrac(delta) {
+  const inp = document.getElementById('frac-count');
+  inp.value = Math.max(1, (parseInt(inp.value)||1) + delta);
+  updateTotal();
+}
+
+function updateTotal() {
+  const a = APP.selectedAsset;
+  if (!a) return;
+  const n = parseInt(document.getElementById('frac-count').value) || 0;
+  const total = (n * a.fractionPrice / 1e6).toFixed(4);
+  document.getElementById('modal-total').textContent = total + ' CNPY';
+}
+
+async function confirmBuy() {
+  if (!APP.walletAddress) { showNotif('Connect wallet first', 'error'); closeModal(); return; }
+  const a = APP.selectedAsset;
+  const n = parseInt(document.getElementById('frac-count').value) || 0;
+  if (n <= 0) return;
+
+  const totalCost = n * a.fractionPrice / 1e6;
+  if (totalCost > APP.walletBalance) { showNotif('Insufficient balance', 'error'); return; }
+
+  showNotif('Submitting transaction...');
+  const res = await rpcPost('BuyFractions', {
+    sender: APP.walletAddress,
+    assetId: a.id,
+    fractionCount: n,
+    attachedFee: Math.ceil(n * a.fractionPrice),
+  });
+  if (!res.ok) {
+    // Fallback to demo mode if node not running
+    a.soldFractions = Math.min(a.totalFractions, a.soldFractions + n);
+    APP.walletBalance = +(APP.walletBalance - totalCost).toFixed(4);
+    APP.portfolio[a.id] = (APP.portfolio[a.id] || 0) + n;
+    showNotif(`[Demo] Purchased ${n} fractions of ${a.title.substring(0,24)}...`, 'success');
+  } else {
+    a.soldFractions = Math.min(a.totalFractions, a.soldFractions + n);
+    APP.walletBalance = +(APP.walletBalance - totalCost).toFixed(4);
+    APP.portfolio[a.id] = (APP.portfolio[a.id] || 0) + n;
+    showNotif(`Purchased ${n} fractions of ${a.title.substring(0,24)}...`, 'success');
+  }
+  closeModal();
+  renderAssets();
+  refreshPortfolio();
+}
+
+// ─── PORTFOLIO ─────────────────────────────────────────────
+function refreshPortfolio() {
+  if (!APP.walletAddress) return;
+
+  const holdings = Object.entries(APP.portfolio);
+  let totalVal = 0, totalFracs = 0;
+
+  const tbody = document.getElementById('holdings-tbody');
+
+  if (holdings.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text3);font-family:var(--mono);font-size:12px;padding:40px;">No holdings yet</td></tr>';
+  } else {
+    tbody.innerHTML = holdings.map(([assetId, fracs]) => {
+      const a = APP.assets.find(x => x.id === assetId);
+      if (!a) return '';
+      const val = (fracs * a.fractionPrice / 1e6).toFixed(2);
+      totalVal += parseFloat(val);
+      totalFracs += fracs;
+      const cls = a.assetClass.replace(/_/g,' ');
+      return `
+        <tr>
+          <td>${a.title}</td>
+          <td class="td-mono">${cls}</td>
+          <td class="td-mono">${fracs.toLocaleString()}</td>
+          <td class="td-gold">${val} CNPY</td>
+          <td class="td-green">${a.yieldRate>0?(a.yieldRate/100).toFixed(1)+'%':'—'}</td>
+          <td><button style="font-family:var(--mono);font-size:10px;letter-spacing:1px;padding:6px 14px;background:transparent;border:1px solid var(--line);color:var(--text2);cursor:pointer;" onclick="openBuyModal('${assetId}')">BUY MORE</button></td>
+        </tr>`;
+    }).join('');
+  }
+
+  document.getElementById('port-val').textContent = '$' + (totalVal * 0.45).toFixed(2); // rough USD
+  document.getElementById('port-fractions').textContent = totalFracs.toLocaleString();
+  document.getElementById('port-assets').textContent = holdings.length;
+  document.getElementById('port-yield').textContent = (APP.portfolio['ppx-a1'] ? (APP.portfolio['ppx-a1'] * 0.006).toFixed(4) : '0') + ' CNPY';
+  document.getElementById('unclaimed-yield').textContent = APP.unclaimedYield.toFixed(4) + ' CNPY';
+}
+
+async function claimYield() {
+  if (!APP.walletAddress) { showNotif('Connect wallet first', 'error'); return; }
+  if (APP.unclaimedYield <= 0) { showNotif('No yield to claim', 'error'); return; }
+
+  const btn = document.getElementById('claim-btn');
+  btn.disabled = true;
+  showNotif('Claiming yield...');
+  const claimRes = await rpcPost('ClaimYield', { sender: APP.walletAddress });
+  if (!claimRes.ok) {
+    // Demo fallback
+    APP.walletBalance += APP.unclaimedYield;
+    showNotif(`[Demo] Claimed ${APP.unclaimedYield.toFixed(4)} CNPY`, 'success');
+  } else {
+    APP.walletBalance += APP.unclaimedYield;
+    showNotif(`Claimed ${APP.unclaimedYield.toFixed(4)} CNPY`, 'success');
+  }
+  APP.unclaimedYield = 0;
+  refreshPortfolio();
+  btn.disabled = false;
+}
+
+// ─── GOVERNANCE ────────────────────────────────────────────
+function renderProposals() {
+  const list = document.getElementById('proposals-list');
+  list.innerHTML = MOCK_PROPOSALS.map(p => {
+    const a = APP.assets.find(x => x.id === p.assetId);
+    const forPct  = Math.round((p.votesFor  / p.totalFractions) * 100);
+    const agnPct  = Math.round((p.votesAgainst / p.totalFractions) * 100);
+    const statusClass = p.status === 'active' ? 'active-prop' : p.status === 'passed' ? 'passed-prop' : 'rejected-prop';
+    return `
+      <div class="proposal-card ${statusClass}">
+        <div>
+          <div class="prop-title">${p.title}</div>
+          <div class="prop-meta">${a?.title||p.assetId} · ${p.status.toUpperCase()} · Expires block ${p.expiresAtBlock.toLocaleString()}</div>
+          <p style="font-family:var(--serif);font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:12px;">${p.description}</p>
+          <div class="prop-bar">
+            <div class="prop-for" style="width:${forPct}%"></div>
+            <div class="prop-against" style="width:${agnPct}%"></div>
+          </div>
+          <div class="prop-votes">
+            <span style="color:var(--sage)">FOR: ${p.votesFor.toLocaleString()} (${forPct}%)</span>
+            <span style="color:var(--rust)">AGAINST: ${p.votesAgainst.toLocaleString()} (${agnPct}%)</span>
+          </div>
+        </div>
+        ${p.status === 'active' ? `
+        <div class="prop-actions">
+          <button class="vote-btn vote-for" onclick="castVote('${p.id}',true)">VOTE FOR</button>
+          <button class="vote-btn vote-against" onclick="castVote('${p.id}',false)">VOTE AGAINST</button>
+        </div>` : `<div style="font-family:var(--mono);font-size:11px;color:${p.status==='passed'?'var(--sage)':'var(--rust)'};letter-spacing:2px;text-transform:uppercase;">${p.status}</div>`}
+      </div>`;
+  }).join('');
+}
+
+async function castVote(proposalId, support) {
+  if (!APP.walletAddress) { showNotif('Connect wallet first', 'error'); return; }
+  showNotif('Submitting vote...');
+  const voteRes = await rpcPost('CastVote', {
+    sender: APP.walletAddress,
+    proposalId: proposalId,
+    support: support,
+  });
+  if (!voteRes.ok) {
+    showNotif(support ? '[Demo] Voted FOR ✓' : '[Demo] Voted AGAINST', support ? 'success' : '');
+  } else {
+    showNotif(support ? 'Voted FOR ✓' : 'Voted AGAINST', support ? 'success' : '');
+  }
+}
+
+function showNewProposal() {
+  if (!APP.walletAddress) { showNotif('Connect wallet first', 'error'); return; }
+  showNotif('Governance proposal creation — coming soon', '');
+}
+
+// ─── LIST ASSET ────────────────────────────────────────────
+async function submitAsset() {
+  if (!APP.walletAddress) { showNotif('Connect wallet first', 'error'); return; }
+  const title = document.getElementById('lf-title').value.trim();
+  if (!title) { showNotif('Enter an asset title', 'error'); return; }
+
+  const fractions = parseInt(document.getElementById('lf-fractions')?.value) || 1000;
+  const price = parseInt(document.getElementById('lf-price')?.value) || 100000;
+  showNotif('Submitting asset to Canopy...');
+  const submitRes = await rpcPost('ListAsset', {
+    sender: APP.walletAddress,
+    title: title,
+    description: document.getElementById('lf-desc')?.value || '',
+    assetClass: document.getElementById('lf-class')?.value || 'other',
+    location: document.getElementById('lf-location')?.value || '',
+    totalValue: 0,
+    totalFractions: fractions,
+    fractionPrice: price,
+    yieldRate: 0,
+    yieldPeriodBlocks: 2016,
+    metadataUri: '',
+  });
+  if (!submitRes.ok) {
+    showNotif(`[Demo] "${title}" submitted for DAO review`, 'success');
+  } else {
+    showNotif(`"${title}" submitted for DAO review`, 'success');
+  }
+}
+
+// ─── TAB SYSTEM ────────────────────────────────────────────
+function switchTab(tabId) {
+  ['tab-market','tab-portfolio','tab-governance','tab-list'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+  document.querySelectorAll('.dapp-tab').forEach((t,i) => {
+    t.classList.toggle('active', ['tab-market','tab-portfolio','tab-governance','tab-list'][i] === tabId);
+  });
+  document.getElementById(tabId).style.display = 'block';
+  if (tabId === 'tab-portfolio') refreshPortfolio();
+}
+
+function scrollToDapp() {
+  document.getElementById('dapp').scrollIntoView({behavior:'smooth'});
+}
+
+// ─── SCROLL REVEAL ─────────────────────────────────────────
+function initScrollReveal() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+}
+
+// ─── NOTIFICATIONS ─────────────────────────────────────────
+function showNotif(msg, type='') {
+  const bar = document.getElementById('notif-bar');
+  const n = document.createElement('div');
+  n.className = 'notif ' + type;
+  n.textContent = msg;
+  bar.appendChild(n);
+  setTimeout(() => n.remove(), 4200);
+}
+
+// ─── RPC HELPERS ───────────────────────────────────────────
+async function rpcPost(method, params) {
+  try {
+    const res = await fetch(`${CANOPY_RPC}/v1/plugin/${PLUGIN_ID}/${method}`, {
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(params)
+    });
+    const json = await res.json().catch(()=>({}));
+    return res.ok ? {ok:true,data:json.result} : {ok:false,error:json.message||'RPC error'};
+  } catch(e) { return {ok:false,error:e.message}; }
+}
+
+// ─── UTILS ─────────────────────────────────────────────────
+function randomHex(n) { return [...Array(n)].map(()=>Math.floor(Math.random()*16).toString(16)).join(''); }
+function sleep(ms) { return new Promise(r=>setTimeout(r,ms)); }
+</script>
+</body>
+</html>
