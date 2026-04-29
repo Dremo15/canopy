@@ -9,131 +9,85 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#f9f7f4;
-  --surface:#ffffff;
-  --border:#e8e3db;
-  --border2:#d4cfc7;
-  --ink:#1a1714;
-  --ink2:#4a4540;
-  --ink3:#8a847c;
-  --gold:#b8860b;
-  --gold-bg:#fdf8ec;
-  --gold-border:#e8d48a;
-  --green:#2d7a4f;
-  --green-bg:#edf7f2;
-  --red:#c0392b;
-  --red-bg:#fdf0ee;
-  --accent:#1a5276;
-  --accent-bg:#eaf2fb;
-  --r:10px;
-  --shadow:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
-  --shadow2:0 2px 8px rgba(0,0,0,.08),0 8px 32px rgba(0,0,0,.06);
+  --bg:#f9f7f4;--surface:#fff;--border:#e8e3db;--border2:#d4cfc7;
+  --ink:#1a1714;--ink2:#4a4540;--ink3:#8a847c;
+  --gold:#b8860b;--gold-bg:#fdf8ec;--gold-bd:#e8d48a;
+  --green:#2d7a4f;--green-bg:#edf7f2;
+  --red:#c0392b;--red-bg:#fdf0ee;
+  --blue:#1a5276;--blue-bg:#eaf2fb;
+  --r:10px;--sh:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
   --serif:'Cormorant Garamond',Georgia,serif;
   --sans:'Outfit',system-ui,sans-serif;
   --mono:'JetBrains Mono',monospace;
 }
 html{scroll-behavior:smooth}
 body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;font-size:15px;line-height:1.6}
-
-/* typography */
 h1,h2,h3{font-family:var(--serif);line-height:1.2;font-weight:600}
 h1{font-size:clamp(1.8rem,4vw,2.8rem)}
 h2{font-size:clamp(1.3rem,2.5vw,1.7rem)}
 h3{font-size:1.05rem}
 p{color:var(--ink2)}
-
-/* layout */
 .wrap{max-width:860px;margin:0 auto;padding:0 1.25rem}
-
 /* topbar */
 .topbar{background:var(--ink);color:#9a9590;font-family:var(--mono);font-size:.72rem;padding:.4rem 0;text-align:center;letter-spacing:.04em}
 .topbar b{color:#f0c040}
 .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#4caf50;margin-right:.4rem;animation:blink 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-
 /* header */
 header{background:var(--surface);border-bottom:1.5px solid var(--border);position:sticky;top:0;z-index:100}
-.header-inner{display:flex;align-items:center;justify-content:space-between;padding:.85rem 0;gap:1rem;flex-wrap:wrap}
-.logo{font-family:var(--serif);font-size:1.5rem;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:.5rem;white-space:nowrap}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:.85rem 0;gap:1rem;flex-wrap:wrap}
+.logo{font-family:var(--serif);font-size:1.5rem;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:.5rem}
 .logo-tag{font-family:var(--sans);font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:var(--gold);color:#fff;padding:.15rem .45rem;border-radius:4px}
 nav{display:flex;gap:.2rem;flex-wrap:wrap}
-nav button{font-family:var(--sans);font-size:.8rem;font-weight:500;background:none;border:none;cursor:pointer;color:var(--ink3);padding:.4rem .8rem;border-radius:6px;transition:all .15s;white-space:nowrap}
-nav button:hover{background:var(--gold-bg);color:var(--gold)}
-nav button.on{background:var(--gold-bg);color:var(--gold);font-weight:600}
-
+nav button{font-family:var(--sans);font-size:.8rem;font-weight:500;background:none;border:none;cursor:pointer;color:var(--ink3);padding:.4rem .8rem;border-radius:6px;transition:all .15s}
+nav button:hover,nav button.on{background:var(--gold-bg);color:var(--gold)}
+nav button.on{font-weight:600}
 /* hero */
 .hero{padding:2.5rem 0 1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center}
 @media(max-width:580px){.hero{grid-template-columns:1fr}}
 .hero p{margin-top:.6rem;font-size:.93rem;max-width:36ch}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
-.stat{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:.9rem 1rem;box-shadow:var(--shadow)}
+.stat{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:.9rem 1rem;box-shadow:var(--sh)}
 .stat .lbl{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:.2rem}
 .stat .val{font-family:var(--serif);font-size:1.4rem;font-weight:700;color:var(--ink)}
 .stat .sub{font-size:.7rem;color:var(--ink3);margin-top:.1rem}
-
 /* tabs */
 .tabs{display:flex;gap:.4rem;margin-bottom:1.25rem;flex-wrap:wrap}
 .tab{font-family:var(--sans);font-size:.82rem;font-weight:500;padding:.45rem 1rem;border-radius:6px;border:1.5px solid var(--border);background:var(--surface);color:var(--ink2);cursor:pointer;transition:all .15s}
-.tab:hover{border-color:var(--gold);color:var(--gold)}
-.tab.on{background:var(--gold);border-color:var(--gold);color:#fff}
-
+.tab:hover,.tab.on{border-color:var(--gold);color:var(--gold)}
+.tab.on{background:var(--gold);color:#fff}
 /* sections */
 .sec{padding:1.25rem 0 2.5rem;display:none}
-.sec.on{display:block;animation:fadein .2s ease}
-@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-
+.sec.on{display:block;animation:fi .2s ease}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 /* card */
-.card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:1.4rem;box-shadow:var(--shadow);margin-bottom:1rem}
-.card+.card{margin-top:.75rem}
-.card h3{margin-bottom:.75rem;color:var(--ink)}
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:1.4rem;box-shadow:var(--sh);margin-bottom:1rem}
+.card h3{margin-bottom:.75rem}
 .card-desc{font-size:.82rem;color:var(--ink2);margin-bottom:1rem;line-height:1.5}
-
 /* form */
 .grid{display:grid;gap:.7rem}
-.grid2{grid-template-columns:1fr 1fr}
-@media(max-width:520px){.grid2{grid-template-columns:1fr}}
-.field label{display:block;font-size:.75rem;font-weight:600;color:var(--ink2);margin-bottom:.3rem;letter-spacing:.02em}
-.field input,.field select,.field textarea{
-  width:100%;font-family:var(--sans);font-size:.88rem;color:var(--ink);
-  background:var(--bg);border:1.5px solid var(--border);border-radius:7px;
-  padding:.5rem .75rem;outline:none;transition:border .15s,box-shadow .15s
-}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(184,134,11,.1);background:#fff}
-.field textarea{resize:vertical;min-height:64px}
+.g2{grid-template-columns:1fr 1fr}
+@media(max-width:520px){.g2{grid-template-columns:1fr}}
+.field label{display:block;font-size:.75rem;font-weight:600;color:var(--ink2);margin-bottom:.3rem}
+.field input,.field select,.field textarea{width:100%;font-family:var(--sans);font-size:.88rem;color:var(--ink);background:var(--bg);border:1.5px solid var(--border);border-radius:7px;padding:.5rem .75rem;outline:none;transition:border .15s,box-shadow .15s}
+.field input:focus,.field select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(184,134,11,.1);background:#fff}
 .hint{font-size:.7rem;color:var(--ink3);margin-top:.2rem}
-hr.div{border:none;border-top:1.5px solid var(--border);margin:1rem 0}
-
+hr.dv{border:none;border-top:1.5px solid var(--border);margin:1rem 0}
 /* buttons */
-.btn{font-family:var(--sans);font-size:.86rem;font-weight:600;padding:.55rem 1.3rem;border-radius:7px;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:.4rem;white-space:nowrap}
+.btn{font-family:var(--sans);font-size:.86rem;font-weight:600;padding:.55rem 1.3rem;border-radius:7px;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:.4rem}
 .btn-gold{background:var(--gold);color:#fff}
-.btn-gold:hover{background:#9a7209;transform:translateY(-1px);box-shadow:var(--shadow2)}
-.btn-gold:active{transform:translateY(0)}
+.btn-gold:hover{background:#9a7209;transform:translateY(-1px)}
 .btn-green{background:var(--green);color:#fff}
 .btn-green:hover{background:#236040}
-.btn-outline{background:#fff;color:var(--ink);border:1.5px solid var(--border)}
-.btn-outline:hover{border-color:var(--ink2)}
+.btn-out{background:#fff;color:var(--ink);border:1.5px solid var(--border)}
+.btn-out:hover{border-color:var(--ink2)}
 .btn-sm{font-size:.78rem;padding:.38rem .85rem}
-.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
-
 /* response */
 .resp{font-family:var(--mono);font-size:.74rem;border-radius:7px;padding:.85rem 1rem;margin-top:.85rem;white-space:pre-wrap;word-break:break-all;display:none;line-height:1.6;border:1.5px solid transparent}
 .resp.show{display:block}
 .resp.ok{background:var(--green-bg);border-color:#a8d8bc;color:#1a5c35}
 .resp.err{background:var(--red-bg);border-color:#f0b8b3;color:#922b21}
-.resp.info{background:var(--accent-bg);border-color:#aed0ed;color:#1a4a72}
-
-/* address pill */
-.addr-pill{font-family:var(--mono);font-size:.72rem;background:var(--bg);border:1px solid var(--border);padding:.2rem .5rem;border-radius:4px;color:var(--ink2);word-break:break-all}
-
-/* wallet banner */
-.wallet-banner{background:var(--gold-bg);border:1.5px solid var(--gold-border);border-radius:var(--r);padding:.85rem 1.1rem;margin-bottom:1.25rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap;font-size:.82rem}
-.wallet-banner .bal{font-family:var(--serif);font-size:1.2rem;font-weight:700;color:var(--ink)}
-
-/* spinner */
-.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .55s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* footer */
+.resp.info{background:var(--blue-bg);border-color:#aed0ed;color:#1a4a72}
 footer{border-top:1.5px solid var(--border);padding:1.25rem 0;text-align:center;font-size:.75rem;color:var(--ink3);margin-top:1rem}
 footer a{color:var(--gold);text-decoration:none}
 </style>
@@ -141,14 +95,14 @@ footer a{color:var(--gold);text-decoration:none}
 <body>
 
 <div class="topbar">
-  <span class="dot"></span>
-  OPEC Network &nbsp;·&nbsp; Chain ID: <b id="chainIdTxt">1</b>
-  &nbsp;·&nbsp; Height: <b id="heightTxt">—</b>
-  &nbsp;·&nbsp; RPC: <b id="rpcTxt">http://localhost:50002</b>
+  <span class="dot"></span>OPEC Network &nbsp;·&nbsp;
+  Chain ID: <b id="chainIdTxt">1</b> &nbsp;·&nbsp;
+  Height: <b id="heightTxt">—</b> &nbsp;·&nbsp;
+  RPC: <b id="rpcTxt">proxy</b>
 </div>
 
 <header>
-  <div class="wrap header-inner">
+  <div class="wrap hdr">
     <div class="logo">🏛️ OPEC <span class="logo-tag">$OPEC</span></div>
     <nav>
       <button class="on" onclick="go('marketplace',this)">Marketplace</button>
@@ -157,14 +111,12 @@ footer a{color:var(--gold);text-decoration:none}
       <button onclick="go('yield',this)">Yield</button>
       <button onclick="go('govern',this)">Govern</button>
       <button onclick="go('wallet',this)">Wallet</button>
-      <button onclick="go('settings',this)">Settings</button>
     </nav>
   </div>
 </header>
 
 <div class="wrap">
 
-<!-- hero -->
 <div class="hero">
   <div>
     <h1>Own a Piece of the Real World</h1>
@@ -174,486 +126,513 @@ footer a{color:var(--gold);text-decoration:none}
     <div class="stat"><div class="lbl">Platform Fee</div><div class="val">1.5%</div><div class="sub">to treasury</div></div>
     <div class="stat"><div class="lbl">Token</div><div class="val">$OPEC</div><div class="sub">native</div></div>
     <div class="stat"><div class="lbl">Chain Height</div><div class="val" id="statH">—</div><div class="sub">blocks</div></div>
-    <div class="stat"><div class="lbl">Your Balance</div><div class="val" id="statBal">—</div><div class="sub">uOPEC liquid</div></div>
+    <div class="stat"><div class="lbl">Your Balance</div><div class="val" id="statBal">—</div><div class="sub">uOPEC</div></div>
   </div>
 </div>
 
-<!-- ── MARKETPLACE ─────────────────────────────────────────────────── -->
+<!-- MARKETPLACE -->
 <section id="sec-marketplace" class="sec on">
   <div class="tabs">
     <button class="tab on" onclick="tab(this,'t-assets')">All Assets</button>
-    <button class="tab" onclick="tab(this,'t-holdings')">My Holdings</button>
+    <button class="tab" onclick="tab(this,'t-hold')">My Holdings</button>
   </div>
-
   <div id="t-assets">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
       <h2>Listed Assets</h2>
-      <button class="btn btn-outline btn-sm" onclick="refreshMarket()">↻ Refresh</button>
+      <button class="btn btn-out btn-sm" onclick="refreshMarket()">↻ Refresh</button>
     </div>
-    <div id="marketMsg" class="resp info show">Connect to your OPEC node and click Refresh to load assets.</div>
+    <div class="resp info show" id="marketMsg">Click Refresh to connect to your OPEC node.</div>
   </div>
-
-  <div id="t-holdings" style="display:none">
+  <div id="t-hold" style="display:none">
     <div class="card">
-      <h3>Query My Holding</h3>
-      <div class="grid grid2" style="margin-top:.5rem">
+      <h3>Query Holding</h3>
+      <div class="grid g2" style="margin-top:.5rem">
         <div class="field"><label>Holder Address (hex)</label><input id="hAddr" placeholder="20-byte hex"/></div>
         <div class="field"><label>Asset ID</label><input type="number" id="hAsset" placeholder="1" min="1"/></div>
       </div>
       <div style="margin-top:.75rem"><button class="btn btn-gold btn-sm" onclick="queryHolding()">Query</button></div>
-      <div class="resp" id="holdingResp"></div>
+      <div class="resp" id="holdR"></div>
     </div>
   </div>
 </section>
 
-<!-- ── TOKENIZE ────────────────────────────────────────────────────── -->
+<!-- TOKENIZE -->
 <section id="sec-tokenize" class="sec">
   <h2 style="margin-bottom:1rem">Tokenize a Real-World Asset</h2>
   <div class="card">
-    <p class="card-desc">Register any real-world asset on-chain and mint fractional shares. <strong>1.5% of fractions</strong> go automatically to the OPEC treasury.</p>
+    <p class="card-desc">Register any real-world asset on-chain and mint fractional shares. <strong>1.5% of fractions</strong> go to the OPEC treasury automatically.</p>
     <div class="grid">
-      <div class="field"><label>Owner Address (hex)</label><input id="tOwner" placeholder="20-byte hex address"/></div>
-      <div class="grid grid2">
+      <div class="field"><label>Owner Address (hex) — 20 bytes</label><input id="tOwner" placeholder="e.g. e7c7dad131a03f7ea0cc09a637ad096eb3495f77"/><div class="hint">SHA256(pubKey).slice(0,20) — NOT the raw public key</div></div>
+      <div class="grid g2">
         <div class="field"><label>Asset Name</label><input id="tName" placeholder="Downtown Office Block" maxlength="128"/></div>
         <div class="field"><label>Asset Type</label>
-          <select id="tType">
-            <option value="real_estate">Real Estate</option>
-            <option value="art">Art</option>
-            <option value="commodity">Commodity</option>
-            <option value="infrastructure">Infrastructure</option>
-            <option value="other">Other</option>
-          </select>
+          <select id="tType"><option value="real_estate">Real Estate</option><option value="art">Art</option><option value="commodity">Commodity</option><option value="infrastructure">Infrastructure</option><option value="other">Other</option></select>
         </div>
       </div>
-      <div class="field"><label>Metadata URI</label><input id="tURI" placeholder="https://example.com/asset/1.json"/><div class="hint">Off-chain JSON with photos, legal docs</div></div>
-      <div class="grid grid2">
+      <div class="field"><label>Metadata URI</label><input id="tURI" placeholder="https://example.com/asset/1.json"/></div>
+      <div class="grid g2">
         <div class="field"><label>Total Fractions</label><input type="number" id="tFractions" placeholder="10000" min="2"/><div class="hint">Min 2</div></div>
         <div class="field"><label>Price per Fraction (uOPEC)</label><input type="number" id="tPrice" placeholder="1000000" min="1"/></div>
       </div>
       <div class="field"><label>Fee (uOPEC)</label><input type="number" id="tFee" value="10000" min="1"/></div>
-      <div class="grid grid2">
-        <div class="field"><label>Private Key (hex) — local only</label><input type="password" id="tPriv" placeholder="BLS12-381 private key"/></div>
-        <div class="field"><label>Public Key (hex)</label><input id="tPub" placeholder="BLS12-381 public key"/></div>
+      <div class="grid g2">
+        <div class="field"><label>Private Key (hex)</label><input type="password" id="tPriv" placeholder="BLS12-381 private key hex"/></div>
+        <div class="field"><label>Public Key (hex) — 48 bytes</label><input id="tPub" placeholder="BLS12-381 public key hex"/></div>
       </div>
     </div>
-    <hr class="div"/>
+    <hr class="dv"/>
     <button class="btn btn-gold" onclick="doTokenize()">🏛️ Tokenize Asset</button>
     <div class="resp" id="tokenizeR"></div>
   </div>
 </section>
 
-<!-- ── TRADE ───────────────────────────────────────────────────────── -->
+<!-- TRADE -->
 <section id="sec-trade" class="sec">
   <h2 style="margin-bottom:1rem">Trade Fractions</h2>
   <div class="tabs">
     <button class="tab on" onclick="tab(this,'t-buy')">Buy Fractions</button>
     <button class="tab" onclick="tab(this,'t-transfer')">P2P Transfer</button>
   </div>
-
   <div id="t-buy">
     <div class="card">
       <h3>Buy Fractions from Owner</h3>
-      <p class="card-desc">Cost = quantity × fraction price. 1.5% platform fee goes to treasury.</p>
+      <p class="card-desc">Cost = quantity × fraction price. 1.5% platform fee to treasury.</p>
       <div class="grid">
-        <div class="grid grid2">
+        <div class="grid g2">
           <div class="field"><label>Buyer Address (hex)</label><input id="bBuyer" placeholder="20-byte hex"/></div>
           <div class="field"><label>Asset ID</label><input type="number" id="bAsset" placeholder="1" min="1"/></div>
         </div>
-        <div class="grid grid2">
+        <div class="grid g2">
           <div class="field"><label>Quantity</label><input type="number" id="bQty" placeholder="100" min="1"/></div>
-          <div class="field"><label>Fee (uOPEC)</label><input type="number" id="bFee" value="10000" min="1"/></div>
+          <div class="field"><label>Fee (uOPEC)</label><input type="number" id="bFee" value="10000"/></div>
         </div>
-        <div class="grid grid2">
-          <div class="field"><label>Private Key (hex)</label><input type="password" id="bPriv" placeholder="BLS12-381 private key"/></div>
-          <div class="field"><label>Public Key (hex)</label><input id="bPub" placeholder="BLS12-381 public key"/></div>
+        <div class="grid g2">
+          <div class="field"><label>Private Key (hex)</label><input type="password" id="bPriv"/></div>
+          <div class="field"><label>Public Key (hex)</label><input id="bPub"/></div>
         </div>
       </div>
-      <hr class="div"/>
+      <hr class="dv"/>
       <button class="btn btn-gold" onclick="doBuy()">💸 Buy Fractions</button>
       <div class="resp" id="buyR"></div>
     </div>
   </div>
-
   <div id="t-transfer" style="display:none">
     <div class="card">
       <h3>Transfer Fractions P2P</h3>
-      <p class="card-desc">No platform fee on P2P transfers — only the network tx fee applies.</p>
+      <p class="card-desc">No platform fee — only the tx fee applies.</p>
       <div class="grid">
-        <div class="grid grid2">
+        <div class="grid g2">
           <div class="field"><label>From Address (hex)</label><input id="tfFrom" placeholder="20-byte hex"/></div>
           <div class="field"><label>To Address (hex)</label><input id="tfTo" placeholder="20-byte hex"/></div>
         </div>
-        <div class="grid grid2">
-          <div class="field"><label>Asset ID</label><input type="number" id="tfAsset" placeholder="1" min="1"/></div>
-          <div class="field"><label>Quantity</label><input type="number" id="tfQty" placeholder="50" min="1"/></div>
+        <div class="grid g2">
+          <div class="field"><label>Asset ID</label><input type="number" id="tfAsset" placeholder="1"/></div>
+          <div class="field"><label>Quantity</label><input type="number" id="tfQty" placeholder="50"/></div>
         </div>
-        <div class="grid grid2">
-          <div class="field"><label>Fee (uOPEC)</label><input type="number" id="tfFee" value="10000"/></div>
-          <div class="field"></div>
-        </div>
-        <div class="grid grid2">
-          <div class="field"><label>Private Key (hex)</label><input type="password" id="tfPriv" placeholder="BLS12-381 private key"/></div>
-          <div class="field"><label>Public Key (hex)</label><input id="tfPub" placeholder="BLS12-381 public key"/></div>
+        <div class="field"><label>Fee (uOPEC)</label><input type="number" id="tfFee" value="10000"/></div>
+        <div class="grid g2">
+          <div class="field"><label>Private Key (hex)</label><input type="password" id="tfPriv"/></div>
+          <div class="field"><label>Public Key (hex)</label><input id="tfPub"/></div>
         </div>
       </div>
-      <hr class="div"/>
-      <button class="btn btn-green" onclick="doTransfer()">🔄 Transfer Fractions</button>
+      <hr class="dv"/>
+      <button class="btn btn-green" onclick="doTransfer()">🔄 Transfer</button>
       <div class="resp" id="transferR"></div>
     </div>
   </div>
 </section>
 
-<!-- ── YIELD ───────────────────────────────────────────────────────── -->
+<!-- YIELD -->
 <section id="sec-yield" class="sec">
   <h2 style="margin-bottom:1rem">Distribute Yield</h2>
   <div class="card">
-    <p class="card-desc">As the asset owner, distribute yield proportionally to all fraction holders. Integer division remainder stays with you.</p>
+    <p class="card-desc">Push yield to all fraction holders proportionally. Remainder stays with you.</p>
     <div class="grid">
-      <div class="grid grid2">
+      <div class="grid g2">
         <div class="field"><label>Owner Address (hex)</label><input id="yOwner" placeholder="20-byte hex"/></div>
-        <div class="field"><label>Asset ID</label><input type="number" id="yAsset" placeholder="1" min="1"/></div>
+        <div class="field"><label>Asset ID</label><input type="number" id="yAsset" placeholder="1"/></div>
       </div>
-      <div class="grid grid2">
-        <div class="field"><label>Total Yield (uOPEC)</label><input type="number" id="yYield" placeholder="5000000" min="1"/></div>
+      <div class="grid g2">
+        <div class="field"><label>Total Yield (uOPEC)</label><input type="number" id="yYield" placeholder="5000000"/></div>
         <div class="field"><label>Fee (uOPEC)</label><input type="number" id="yFee" value="10000"/></div>
       </div>
-      <div class="grid grid2">
-        <div class="field"><label>Private Key (hex)</label><input type="password" id="yPriv" placeholder="BLS12-381 private key"/></div>
-        <div class="field"><label>Public Key (hex)</label><input id="yPub" placeholder="BLS12-381 public key"/></div>
+      <div class="grid g2">
+        <div class="field"><label>Private Key (hex)</label><input type="password" id="yPriv"/></div>
+        <div class="field"><label>Public Key (hex)</label><input id="yPub"/></div>
       </div>
     </div>
-    <hr class="div"/>
+    <hr class="dv"/>
     <button class="btn btn-green" onclick="doYield()">🌾 Distribute Yield</button>
     <div class="resp" id="yieldR"></div>
   </div>
 </section>
 
-<!-- ── GOVERN ─────────────────────────────────────────────────────── -->
+<!-- GOVERN -->
 <section id="sec-govern" class="sec">
   <h2 style="margin-bottom:1rem">DAO Governance</h2>
   <div class="card">
     <h3>Cast a Vote</h3>
     <p class="card-desc">Vote weight = total fractions held across all assets. One vote per address per proposal.</p>
     <div class="grid">
-      <div class="grid grid2">
+      <div class="grid g2">
         <div class="field"><label>Voter Address (hex)</label><input id="vVoter" placeholder="20-byte hex"/></div>
-        <div class="field"><label>Proposal ID</label><input type="number" id="vProposal" placeholder="1" min="1"/></div>
+        <div class="field"><label>Proposal ID</label><input type="number" id="vProposal" placeholder="1"/></div>
       </div>
-      <div class="grid grid2">
+      <div class="grid g2">
         <div class="field"><label>Vote</label>
-          <select id="vApprove">
-            <option value="true">✅ Approve (Yes)</option>
-            <option value="false">❌ Reject (No)</option>
-          </select>
+          <select id="vApprove"><option value="true">✅ Approve (Yes)</option><option value="false">❌ Reject (No)</option></select>
         </div>
         <div class="field"><label>Fee (uOPEC)</label><input type="number" id="vFee" value="10000"/></div>
       </div>
-      <div class="grid grid2">
-        <div class="field"><label>Private Key (hex)</label><input type="password" id="vPriv" placeholder="BLS12-381 private key"/></div>
-        <div class="field"><label>Public Key (hex)</label><input id="vPub" placeholder="BLS12-381 public key"/></div>
+      <div class="grid g2">
+        <div class="field"><label>Private Key (hex)</label><input type="password" id="vPriv"/></div>
+        <div class="field"><label>Public Key (hex)</label><input id="vPub"/></div>
       </div>
     </div>
-    <hr class="div"/>
+    <hr class="dv"/>
     <button class="btn btn-gold" onclick="doVote()">🗳️ Cast Vote</button>
     <div class="resp" id="voteR"></div>
   </div>
 </section>
 
-<!-- ── WALLET ─────────────────────────────────────────────────────── -->
+<!-- WALLET -->
 <section id="sec-wallet" class="sec">
   <h2 style="margin-bottom:1rem">Wallet</h2>
-
   <div class="card">
     <h3>Query Account Balance</h3>
-    <div class="grid grid2" style="margin-top:.5rem">
+    <div class="grid g2" style="margin-top:.5rem">
       <div class="field"><label>Address (hex)</label><input id="qAddr" placeholder="20-byte hex"/></div>
       <div class="field" style="display:flex;align-items:flex-end"><button class="btn btn-gold btn-sm" onclick="queryAccount()">Query</button></div>
     </div>
     <div class="resp" id="accountR"></div>
   </div>
-
   <div class="card">
     <h3>Send $OPEC</h3>
     <div class="grid">
-      <div class="grid grid2">
+      <div class="grid g2">
         <div class="field"><label>From (hex)</label><input id="sFrom" placeholder="20-byte hex"/></div>
         <div class="field"><label>To (hex)</label><input id="sTo" placeholder="20-byte hex"/></div>
       </div>
-      <div class="grid grid2">
-        <div class="field"><label>Amount (uOPEC)</label><input type="number" id="sAmt" placeholder="100000" min="1"/></div>
-        <div class="field"><label>Fee (uOPEC)</label><input type="number" id="sFee" value="10000" min="1"/></div>
+      <div class="grid g2">
+        <div class="field"><label>Amount (uOPEC)</label><input type="number" id="sAmt" placeholder="100000"/></div>
+        <div class="field"><label>Fee (uOPEC)</label><input type="number" id="sFee" value="10000"/></div>
       </div>
-      <div class="grid grid2">
-        <div class="field"><label>Private Key (hex)</label><input type="password" id="sPriv" placeholder="BLS12-381 private key"/></div>
-        <div class="field"><label>Public Key (hex)</label><input id="sPub" placeholder="BLS12-381 public key"/></div>
+      <div class="grid g2">
+        <div class="field"><label>Private Key (hex)</label><input type="password" id="sPriv"/></div>
+        <div class="field"><label>Public Key (hex)</label><input id="sPub"/></div>
       </div>
     </div>
-    <hr class="div"/>
+    <hr class="dv"/>
     <button class="btn btn-gold" onclick="doSend()">Send $OPEC</button>
     <div class="resp" id="sendR"></div>
   </div>
-
   <div class="card">
-    <h3>Chain Info</h3>
-    <div style="margin-top:.5rem;display:flex;gap:.5rem;flex-wrap:wrap">
-      <button class="btn btn-outline btn-sm" onclick="queryHeight()">Query Height</button>
-      <button class="btn btn-outline btn-sm" onclick="queryPending()">Pending Txs</button>
+    <h3>Derive Address from Public Key</h3>
+    <p class="card-desc">Canopy address = SHA256(pubKeyBytes).slice(0,20). Paste your public key to derive the correct address.</p>
+    <div class="grid g2" style="margin-top:.5rem">
+      <div class="field"><label>Public Key (hex, 48 bytes)</label><input id="derivePub" placeholder="ae13ea1c3a3a..."/></div>
+      <div class="field" style="display:flex;align-items:flex-end"><button class="btn btn-out btn-sm" onclick="deriveAddr()">Derive</button></div>
+    </div>
+    <div class="resp" id="deriveR"></div>
+  </div>
+  <div class="card">
+    <h3>Chain Status</h3>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem">
+      <button class="btn btn-out btn-sm" onclick="queryHeight()">Height</button>
+      <button class="btn btn-out btn-sm" onclick="queryFailed()">Failed Txs</button>
     </div>
     <div class="resp" id="chainR"></div>
   </div>
 </section>
 
-<!-- ── SETTINGS ───────────────────────────────────────────────────── -->
-<section id="sec-settings" class="sec">
-  <h2 style="margin-bottom:1rem">Settings</h2>
-  <div class="card">
-    <h3>RPC Configuration</h3>
-    <div class="grid" style="margin-top:.75rem">
-      <div class="field"><label>Public RPC (port 50002)</label><input id="cfgRpc" value="http://localhost:50002" oninput="saveCfg()"/><div class="hint">Submit transactions and query state</div></div>
-      <div class="field"><label>Admin RPC (port 50003)</label><input id="cfgAdmin" value="http://localhost:50003" oninput="saveCfg()"/><div class="hint">Key management — never expose externally</div></div>
-      <div class="grid grid2">
-        <div class="field"><label>Chain ID</label><input type="number" id="cfgChain" value="1" oninput="saveCfg()"/></div>
-        <div class="field"><label>Network ID</label><input type="number" id="cfgNet" value="1" oninput="saveCfg()"/></div>
-      </div>
-    </div>
-    <hr class="div"/>
-    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-      <button class="btn btn-gold btn-sm" onclick="testConn()">Test Connection</button>
-      <button class="btn btn-outline btn-sm" onclick="resetCfg()">Reset Defaults</button>
-    </div>
-    <div class="resp" id="connR"></div>
-  </div>
+</div>
 
-  <div class="card">
-    <h3>Load Key from Keystore</h3>
-    <div class="grid grid2" style="margin-top:.5rem">
-      <div class="field"><label>Address or Nickname</label><input id="ksAddr" placeholder="validator"/></div>
-      <div class="field"><label>Password</label><input type="password" id="ksPwd" placeholder="leave blank if none"/></div>
-    </div>
-    <div style="margin-top:.75rem"><button class="btn btn-outline btn-sm" onclick="loadKey()">Load Key</button></div>
-    <div class="resp" id="ksR"></div>
-  </div>
-</section>
-
-</div><!-- /wrap -->
-
-<footer>
-  <div class="wrap">
-    🏛️ <strong>OPEC Network</strong> — Fractional RWA Marketplace on
-    <a href="https://github.com/canopy-network/canopy" target="_blank">Canopy Network</a>
-    &nbsp;·&nbsp; Vibe Code Contest
-  </div>
-</footer>
+<footer><div class="wrap">🏛️ <strong>OPEC Network</strong> — Fractional RWA Marketplace on <a href="https://github.com/canopy-network/canopy" target="_blank">Canopy Network</a> &nbsp;·&nbsp; Vibe Code Contest</div></footer>
 
 <script type="module">
-// ── Config ───────────────────────────────────────────────────────────────────
-let C = { rpc:'http://localhost:50002', admin:'http://localhost:50003', chain:1, net:1 };
-
-function loadCfg(){
-  try{ const s=localStorage.getItem('opec');if(s)Object.assign(C,JSON.parse(s)); }catch(_){}
-  g('cfgRpc').value=C.rpc; g('cfgAdmin').value=C.admin;
-  g('cfgChain').value=C.chain; g('cfgNet').value=C.net;
-  g('rpcTxt').textContent=C.rpc; g('chainIdTxt').textContent=C.chain;
-}
-window.saveCfg=()=>{
-  C.rpc=g('cfgRpc').value.trim(); C.admin=g('cfgAdmin').value.trim();
-  C.chain=parseInt(g('cfgChain').value)||1; C.net=parseInt(g('cfgNet').value)||1;
-  localStorage.setItem('opec',JSON.stringify(C));
-  g('rpcTxt').textContent=C.rpc; g('chainIdTxt').textContent=C.chain;
-};
-window.resetCfg=()=>{
-  C={rpc:'http://localhost:50002',admin:'http://localhost:50003',chain:1,net:1};
-  loadCfg(); resp('connR','Reset to defaults.',true);
-};
-
-// ── RPC helpers ──────────────────────────────────────────────────────────────
-// All Canopy RPC endpoints use POST with JSON body
-async function post(url, body={}){
-  const r = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+// ── RPC via proxy ─────────────────────────────────────────────────────────────
+// All RPC calls go through proxy: /rpc/* → :50002, /admin/* → :50003
+// This avoids CORS issues entirely.
+async function rpc(path, body={}) {
+  const r = await fetch('/rpc'+path, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(body),
+  });
   const txt = await r.text();
-  try{ return {ok:r.ok, data:JSON.parse(txt)}; }catch(_){ return {ok:r.ok, data:txt}; }
+  try { return {ok:r.ok, data:JSON.parse(txt)}; }
+  catch(_) { return {ok:r.ok, data:txt}; }
+}
+async function adm(path, body={}) {
+  const r = await fetch('/admin'+path, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(body),
+  });
+  const txt = await r.text();
+  try { return {ok:r.ok, data:JSON.parse(txt)}; }
+  catch(_) { return {ok:r.ok, data:txt}; }
 }
 
-// ── BLS12-381 signing ────────────────────────────────────────────────────────
-let BLS = null;
-async function bls(){
-  if(!BLS) BLS = await import('https://esm.sh/@noble/curves@1.4.2/bls12-381');
-  return BLS;
+// ── Config ────────────────────────────────────────────────────────────────────
+const CFG = {chain:1, net:1};
+
+// ── BLS ───────────────────────────────────────────────────────────────────────
+let _bls;
+async function loadBLS() {
+  if (_bls) return _bls;
+  const mod = await import('https://esm.sh/@noble/curves@1.4.2/bls12-381');
+  _bls = mod.bls12_381;
+  return _bls;
 }
 
-// ── Protobuf helpers (manual binary encoding) ────────────────────────────────
-function varint(v){
-  const o=[];let n=BigInt(v);
-  while(n>127n){o.push(Number(n&0xffn|0x80n));n>>=7n;}
-  o.push(Number(n));return new Uint8Array(o);
+// ── Protobuf encoder (from definitive guide section 11) ───────────────────────
+function protoEncode(fields) {
+  const parts = [];
+  for (const f of fields) {
+    if (f.value === undefined || f.value === null) continue;
+    if (f.type === 'string') {
+      if (f.value === '') continue; // proto3: omit empty strings
+      const enc = new TextEncoder().encode(f.value);
+      parts.push(encodeTag(f.field,2), encodeVarint(enc.length), enc);
+    } else if (f.type === 'bytes') {
+      if (!f.value?.length) continue;
+      parts.push(encodeTag(f.field,2), encodeVarint(f.value.length), f.value);
+    } else if (f.type === 'varint') {
+      if (f.value === 0 || f.value === 0n) continue; // proto3: omit zero
+      parts.push(encodeTag(f.field,0), encodeVarint(f.value));
+    }
+  }
+  const out = new Uint8Array(parts.reduce((s,p) => s+p.length, 0));
+  let off = 0;
+  for (const p of parts) { out.set(p, off); off += p.length; }
+  return out;
 }
-function tag(f,w){return varint((BigInt(f)<<3n)|BigInt(w));}
-function lenDelim(f,b){return cat(tag(f,2),varint(b.length),b);}
-function uint64f(f,v){
-  if(!v||v===0||v===0n)return new Uint8Array(0);
-  return cat(tag(f,0),varint(v));
-}
-function strField(f,s){const b=new TextEncoder().encode(s);return lenDelim(f,b);}
-function cat(...a){
-  const t=a.reduce((s,x)=>s+x.length,0),o=new Uint8Array(t);
-  let i=0;for(const x of a){o.set(x,i);i+=x.length;}return o;
-}
-function hex2b(h){h=h.replace(/^0x/,'');if(h.length%2)h='0'+h;const o=new Uint8Array(h.length/2);for(let i=0;i<h.length;i+=2)o[i/2]=parseInt(h.slice(i,i+2),16);return o;}
-function b2b64(b){let s='';for(const x of b)s+=String.fromCharCode(x);return btoa(s);}
-function b2hex(b){return Array.from(b).map(x=>x.toString(16).padStart(2,'0')).join('');}
-function hex2b64(h){return b2b64(hex2b(h));}
-
-// Encode google.protobuf.Any
-function encodeAny(typeUrl, valBytes){
-  return cat(strField(1,typeUrl), lenDelim(2,valBytes));
-}
-
-// Build Transaction sign bytes (signature field omitted = zero value)
-function signBytes(typeUrl, msgBytes, time, fee, chainId, netId, height){
-  const anyB = encodeAny(typeUrl, msgBytes);
-  return cat(
-    strField(1, typeUrl),          // message_type = field 1
-    lenDelim(2, anyB),             // msg = field 2 (Any)
-    // field 3 (signature) omitted — proto3 omits zero values
-    height ? uint64f(4, height) : new Uint8Array(0), // created_height
-    uint64f(5, time),              // time
-    uint64f(6, fee),               // fee
-    // memo omitted (empty string = default = omitted in proto3)
-    uint64f(8, netId),             // network_id
-    uint64f(9, chainId),           // chain_id
-  );
+function encodeTag(field, wire) { return encodeVarint((field << 3)|wire); }
+function encodeVarint(val) {
+  const bytes = []; let v = typeof val === 'bigint' ? val : BigInt(val);
+  do { let b = Number(v & 0x7fn); v >>= 7n; if (v > 0n) b |= 0x80; bytes.push(b); } while (v > 0n);
+  return new Uint8Array(bytes);
 }
 
-// ── Message encoders ─────────────────────────────────────────────────────────
-function encSend(from,to,amt){return cat(lenDelim(1,hex2b(from)),lenDelim(2,hex2b(to)),uint64f(3,amt));}
-function encTokenize(owner,name,type_,uri,fractions,price){
-  return cat(lenDelim(1,hex2b(owner)),strField(2,name),strField(3,type_),strField(4,uri),uint64f(5,fractions),uint64f(6,price));
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function hex2b(h) {
+  h = h.replace(/^0x/,''); if (h.length%2) h='0'+h;
+  const o = new Uint8Array(h.length/2);
+  for (let i=0;i<h.length;i+=2) o[i/2]=parseInt(h.slice(i,i+2),16);
+  return o;
 }
-function encBuy(buyer,assetId,qty){return cat(lenDelim(1,hex2b(buyer)),uint64f(2,assetId),uint64f(3,qty));}
-function encTransfer(from,to,assetId,qty){return cat(lenDelim(1,hex2b(from)),lenDelim(2,hex2b(to)),uint64f(3,assetId),uint64f(4,qty));}
-function encYield(owner,assetId,y){return cat(lenDelim(1,hex2b(owner)),uint64f(2,assetId),uint64f(3,y));}
-function encVote(voter,proposalId,approve){
-  const p=[lenDelim(1,hex2b(voter)),uint64f(2,proposalId)];
-  if(approve)p.push(cat(tag(3,0),new Uint8Array([1])));
-  return cat(...p);
+function b2hex(b) { return Array.from(b).map(x=>x.toString(16).padStart(2,'0')).join(''); }
+
+// Derive Canopy address: SHA256(pubKeyBytes).slice(0,20)
+async function pubKeyToAddress(pubKeyHex) {
+  const h = await crypto.subtle.digest('SHA-256', hex2b(pubKeyHex));
+  return b2hex(new Uint8Array(h).slice(0,20));
 }
 
-// ── Sign and submit ──────────────────────────────────────────────────────────
-async function signAndSubmit(typeUrl, msgBytes, privHex, pubHex, fee, respId){
-  resp(respId,'Signing…','info');
-  try{
-    const lib = await bls();
-    // Compute txTime ONCE — reuse same value in signBytes AND body
-    const txTime = BigInt(Date.now() * 1000); // microseconds
+// ── Proto message encoders ────────────────────────────────────────────────────
+function encSend(from,to,amt) {
+  return protoEncode([
+    {field:1,type:'bytes',value:hex2b(from)},
+    {field:2,type:'bytes',value:hex2b(to)},
+    {field:3,type:'varint',value:amt},
+  ]);
+}
+function encTokenize(owner,name,type_,uri,fractions,price) {
+  return protoEncode([
+    {field:1,type:'bytes',value:hex2b(owner)},
+    {field:2,type:'string',value:name},
+    {field:3,type:'string',value:type_},
+    {field:4,type:'string',value:uri},
+    {field:5,type:'varint',value:fractions},
+    {field:6,type:'varint',value:price},
+  ]);
+}
+function encBuy(buyer,assetId,qty) {
+  return protoEncode([
+    {field:1,type:'bytes',value:hex2b(buyer)},
+    {field:2,type:'varint',value:assetId},
+    {field:3,type:'varint',value:qty},
+  ]);
+}
+function encTransfer(from,to,assetId,qty) {
+  return protoEncode([
+    {field:1,type:'bytes',value:hex2b(from)},
+    {field:2,type:'bytes',value:hex2b(to)},
+    {field:3,type:'varint',value:assetId},
+    {field:4,type:'varint',value:qty},
+  ]);
+}
+function encYield(owner,assetId,y) {
+  return protoEncode([
+    {field:1,type:'bytes',value:hex2b(owner)},
+    {field:2,type:'varint',value:assetId},
+    {field:3,type:'varint',value:y},
+  ]);
+}
+function encVote(voter,proposalId,approve) {
+  return protoEncode([
+    {field:1,type:'bytes',value:hex2b(voter)},
+    {field:2,type:'varint',value:proposalId},
+    // field 3 bool: only emit if true (false = 0 = omitted in proto3)
+    ...(approve ? [{field:3,type:'varint',value:1}] : []),
+  ]);
+}
 
-    const sb = signBytes(typeUrl, msgBytes, txTime, BigInt(fee), BigInt(C.chain), BigInt(C.net), 0n);
+// ── encodeAny ─────────────────────────────────────────────────────────────────
+function encodeAny(typeUrl, valueBytes) {
+  return protoEncode([
+    {field:1,type:'string',value:typeUrl},
+    {field:2,type:'bytes', value:valueBytes},
+  ]);
+}
 
-    // Guide: use b.sign() directly (G2, 96-byte signature)
-    const privBytes = hex2b(privHex);
-    const pubBytes  = hex2b(pubHex);
-    const sigBytes  = lib.bls12_381.sign(sb, privBytes);
+// ── buildSignBytes (guide section 12) ─────────────────────────────────────────
+function buildSignBytes({type, msgTypeUrl, msgBytes, fee, time, networkID, chainID}) {
+  const txTime = typeof time === 'bigint' ? time : BigInt(time);
+  const anyBytes = encodeAny(msgTypeUrl, msgBytes);
+  return protoEncode([
+    {field:1, type:'string', value:type},           // message_type
+    {field:2, type:'bytes',  value:anyBytes},        // msg (Any)
+    // field 3 = signature — OMIT
+    // field 4 = created_height — omit (0)
+    {field:5, type:'varint', value:Number(txTime)},  // time microseconds
+    {field:6, type:'varint', value:fee},             // fee
+    // field 7 = memo — omit when empty
+    {field:8, type:'varint', value:networkID||1},    // network_id
+    {field:9, type:'varint', value:chainID||1},      // chain_id
+  ]);
+}
 
-    // Guide p.13: signature fields are HEX not base64
-    // Guide p.12: plugin tx body format uses type + msgTypeUrl + msgBytes(hex)
-    const body = {
-      type:       typeUrl,      // message_type
-      msgTypeUrl: typeUrl,      // fully qualified proto type URL
-      msgBytes:   b2hex(msgBytes), // hex-encoded proto bytes
-      fee:        fee,
-      time:       Number(txTime), // same value used in signBytes above
-      memo:       '',
-      networkID:  C.net,
-      chainID:    C.chain,
-      signature: {
-        publicKey: b2hex(pubBytes),  // hex, 48 bytes
-        signature: b2hex(sigBytes),  // hex, 96 bytes
-      },
-    };
+// ── buildTx (guide section 12) ────────────────────────────────────────────────
+async function buildTx(type, msgTypeUrl, msgBytes, privHex, pubHex, fee) {
+  const b = await loadBLS();
+  const txTime = BigInt(Date.now() * 1000); // microseconds — compute ONCE
 
-    const r = await post(`${C.rpc}/v1/tx`, body);
-    resp(respId, JSON.stringify(r.data,null,2), r.ok);
-  }catch(e){
-    resp(respId,'Error: '+e.message,false);
+  const sb = buildSignBytes({
+    type, msgTypeUrl, msgBytes, fee,
+    time: txTime,
+    networkID: CFG.net,
+    chainID: CFG.chain,
+  });
+
+  // Guide: await b.sign(signBytes, wallet.privKey) — G2, 96 bytes
+  const sigBytes = await b.sign(sb, hex2b(privHex));
+
+  return {
+    type,
+    msgTypeUrl,
+    msgBytes:  b2hex(msgBytes),         // hex
+    fee,
+    time:      Number(txTime),           // same value — compute ONCE
+    memo:      '',
+    networkID: CFG.net,
+    chainID:   CFG.chain,
+    signature: {
+      publicKey: pubHex,                 // hex, 48 bytes
+      signature: b2hex(sigBytes),        // hex, 96 bytes
+    },
+  };
+}
+
+// ── Submit tx ─────────────────────────────────────────────────────────────────
+async function submit(type, msgTypeUrl, msgBytes, privHex, pubHex, fee, respId) {
+  resp(respId, 'Signing and submitting…', 'info');
+  try {
+    const body = await buildTx(type, msgTypeUrl, msgBytes, privHex, pubHex, fee);
+    const r = await rpc('/v1/tx', body);
+    resp(respId, JSON.stringify(r.data, null, 2), r.ok);
+  } catch(e) {
+    resp(respId, 'Error: '+e.message, false);
   }
 }
 
-// ── Actions ──────────────────────────────────────────────────────────────────
-window.doTokenize=async()=>{
-  const o=v('tOwner'),n=v('tName'),t=v('tType'),u=v('tURI');
-  const fr=BigInt(v('tFractions')||0),pr=BigInt(v('tPrice')||0),fee=parseInt(v('tFee'))||10000;
-  if(!o||!n||!v('tPriv')||!v('tPub'))return resp('tokenizeR','Fill all required fields.',false);
-  await signAndSubmit('type.googleapis.com/types.MessageTokenizeAsset',encTokenize(o,n,t,u,fr,pr),v('tPriv'),v('tPub'),fee,'tokenizeR');
+// ── Action handlers ───────────────────────────────────────────────────────────
+window.doTokenize = async () => {
+  const owner=v('tOwner'),name=v('tName'),type_=v('tType'),uri=v('tURI');
+  const fr=parseInt(v('tFractions')||0),pr=parseInt(v('tPrice')||0),fee=parseInt(v('tFee'))||10000;
+  if(!owner||!name||!v('tPriv')||!v('tPub')) return resp('tokenizeR','Fill all required fields.',false);
+  const mb = encTokenize(owner,name,type_,uri,fr,pr);
+  await submit('tokenize_asset','type.googleapis.com/types.MessageTokenizeAsset',mb,v('tPriv'),v('tPub'),fee,'tokenizeR');
 };
-window.doBuy=async()=>{
-  const b=v('bBuyer'),a=BigInt(v('bAsset')||0),q=BigInt(v('bQty')||0),fee=parseInt(v('bFee'))||10000;
-  if(!b||!v('bPriv')||!v('bPub'))return resp('buyR','Fill all required fields.',false);
-  await signAndSubmit('type.googleapis.com/types.MessageBuyFraction',encBuy(b,a,q),v('bPriv'),v('bPub'),fee,'buyR');
+window.doBuy = async () => {
+  const buyer=v('bBuyer'),assetId=parseInt(v('bAsset')||0),qty=parseInt(v('bQty')||0),fee=parseInt(v('bFee'))||10000;
+  if(!buyer||!v('bPriv')||!v('bPub')) return resp('buyR','Fill all required fields.',false);
+  await submit('buy_fraction','type.googleapis.com/types.MessageBuyFraction',encBuy(buyer,assetId,qty),v('bPriv'),v('bPub'),fee,'buyR');
 };
-window.doTransfer=async()=>{
-  const f=v('tfFrom'),t=v('tfTo'),a=BigInt(v('tfAsset')||0),q=BigInt(v('tfQty')||0),fee=parseInt(v('tfFee'))||10000;
-  if(!f||!t||!v('tfPriv')||!v('tfPub'))return resp('transferR','Fill all required fields.',false);
-  await signAndSubmit('type.googleapis.com/types.MessageTransferFraction',encTransfer(f,t,a,q),v('tfPriv'),v('tfPub'),fee,'transferR');
+window.doTransfer = async () => {
+  const from=v('tfFrom'),to=v('tfTo'),assetId=parseInt(v('tfAsset')||0),qty=parseInt(v('tfQty')||0),fee=parseInt(v('tfFee'))||10000;
+  if(!from||!to||!v('tfPriv')||!v('tfPub')) return resp('transferR','Fill all required fields.',false);
+  await submit('transfer_fraction','type.googleapis.com/types.MessageTransferFraction',encTransfer(from,to,assetId,qty),v('tfPriv'),v('tfPub'),fee,'transferR');
 };
-window.doYield=async()=>{
-  const o=v('yOwner'),a=BigInt(v('yAsset')||0),y=BigInt(v('yYield')||0),fee=parseInt(v('yFee'))||10000;
-  if(!o||!v('yPriv')||!v('yPub'))return resp('yieldR','Fill all required fields.',false);
-  await signAndSubmit('type.googleapis.com/types.MessageDistributeYield',encYield(o,a,y),v('yPriv'),v('yPub'),fee,'yieldR');
+window.doYield = async () => {
+  const owner=v('yOwner'),assetId=parseInt(v('yAsset')||0),y=parseInt(v('yYield')||0),fee=parseInt(v('yFee'))||10000;
+  if(!owner||!v('yPriv')||!v('yPub')) return resp('yieldR','Fill all required fields.',false);
+  await submit('distribute_yield','type.googleapis.com/types.MessageDistributeYield',encYield(owner,assetId,y),v('yPriv'),v('yPub'),fee,'yieldR');
 };
-window.doVote=async()=>{
-  const vt=v('vVoter'),p=BigInt(v('vProposal')||0),ap=v('vApprove')==='true',fee=parseInt(v('vFee'))||10000;
-  if(!vt||!v('vPriv')||!v('vPub'))return resp('voteR','Fill all required fields.',false);
-  await signAndSubmit('type.googleapis.com/types.MessageCastVote',encVote(vt,p,ap),v('vPriv'),v('vPub'),fee,'voteR');
+window.doVote = async () => {
+  const voter=v('vVoter'),pid=parseInt(v('vProposal')||0),ap=v('vApprove')==='true',fee=parseInt(v('vFee'))||10000;
+  if(!voter||!v('vPriv')||!v('vPub')) return resp('voteR','Fill all required fields.',false);
+  await submit('cast_vote','type.googleapis.com/types.MessageCastVote',encVote(voter,pid,ap),v('vPriv'),v('vPub'),fee,'voteR');
 };
-window.doSend=async()=>{
-  const f=v('sFrom'),t=v('sTo'),a=BigInt(v('sAmt')||0),fee=parseInt(v('sFee'))||10000;
-  if(!f||!t||!v('sPriv')||!v('sPub'))return resp('sendR','Fill all required fields.',false);
-  await signAndSubmit('type.googleapis.com/types.MessageSend',encSend(f,t,a),v('sPriv'),v('sPub'),fee,'sendR');
+window.doSend = async () => {
+  const from=v('sFrom'),to=v('sTo'),amt=parseInt(v('sAmt')||0),fee=parseInt(v('sFee'))||10000;
+  if(!from||!to||!v('sPriv')||!v('sPub')) return resp('sendR','Fill all required fields.',false);
+  // Send uses core format with msg object, not msgBytes
+  const b = await loadBLS();
+  const txTime = BigInt(Date.now()*1000);
+  const msgBytes = encSend(from,to,amt);
+  const sb = buildSignBytes({type:'send',msgTypeUrl:'type.googleapis.com/types.MessageSend',msgBytes,fee,time:txTime,networkID:CFG.net,chainID:CFG.chain});
+  const sigBytes = await b.sign(sb, hex2b(v('sPriv')));
+  const body = {
+    type:'send',
+    msg:{fromAddress:from,toAddress:to,amount:amt},
+    fee,time:Number(txTime),memo:'',networkID:CFG.net,chainID:CFG.chain,
+    signature:{publicKey:v('sPub'),signature:b2hex(sigBytes)},
+  };
+  const r = await rpc('/v1/tx', body);
+  resp('sendR', JSON.stringify(r.data,null,2), r.ok);
 };
 
-// ── Queries (POST) ────────────────────────────────────────────────────────────
-window.queryAccount=async()=>{
-  const addr=v('qAddr');if(!addr)return;
-  const r=await post(`${C.rpc}/v1/query/account`,{address:addr});
-  resp('accountR',JSON.stringify(r.data,null,2),r.ok);
+// ── Queries ───────────────────────────────────────────────────────────────────
+window.queryAccount = async () => {
+  const addr=v('qAddr'); if(!addr) return;
+  const r = await rpc('/v1/query/account', {address:addr});
+  resp('accountR', JSON.stringify(r.data,null,2), r.ok);
   if(r.ok&&r.data.amount!=null) g('statBal').textContent=r.data.amount.toLocaleString();
 };
-window.queryHeight=async()=>{
-  const r=await post(`${C.rpc}/v1/query/height`,{});
-  resp('chainR',JSON.stringify(r.data,null,2),r.ok);
+window.queryHeight = async () => {
+  const r = await rpc('/v1/query/height', {});
+  resp('chainR', JSON.stringify(r.data,null,2), r.ok);
   if(r.ok&&r.data.height){g('heightTxt').textContent=r.data.height;g('statH').textContent=r.data.height;}
 };
-window.queryPending=async()=>{
-  const r=await post(`${C.rpc}/v1/query/pending`,{});
-  resp('chainR',JSON.stringify(r.data,null,2),r.ok);
+window.queryFailed = async () => {
+  const r = await rpc('/v1/query/failed-txs', {address:v('qAddr')||'',perPage:20});
+  resp('chainR', JSON.stringify(r.data,null,2), r.ok);
 };
-window.queryHolding=async()=>{
-  const addr=v('hAddr'),assetId=v('hAsset');
-  if(!addr)return resp('holdingResp','Enter address.',false);
-  const r=await post(`${C.rpc}/v1/query/account`,{address:addr});
-  resp('holdingResp',JSON.stringify(r.data,null,2),r.ok);
+window.queryHolding = async () => {
+  const addr=v('hAddr'); if(!addr) return resp('holdR','Enter address.',false);
+  const r = await rpc('/v1/query/account', {address:addr});
+  resp('holdR', JSON.stringify(r.data,null,2), r.ok);
 };
-window.refreshMarket=async()=>{
-  const r=await post(`${C.rpc}/v1/query/height`,{});
-  if(r.ok){
+window.refreshMarket = async () => {
+  const r = await rpc('/v1/query/height', {});
+  if(r.ok&&r.data.height){
     g('heightTxt').textContent=r.data.height;
     g('statH').textContent=r.data.height;
-    g('marketMsg').textContent=`Node connected at height ${r.data.height}.\nUse Tokenize to list the first asset.`;
-    g('marketMsg').className='resp info show';
+    g('marketMsg').textContent=`✓ Node connected at height ${r.data.height}\nUse Tokenize to list the first asset.`;
+    g('marketMsg').className='resp ok show';
   } else {
-    g('marketMsg').textContent=`Cannot reach node at ${C.rpc}`;
+    g('marketMsg').textContent='✗ Cannot reach node\n'+JSON.stringify(r.data);
     g('marketMsg').className='resp err show';
   }
 };
-window.testConn=async()=>{
-  try{
-    const r=await post(`${C.rpc}/v1/query/height`,{});
-    resp('connR',r.ok?`✓ Connected\n${JSON.stringify(r.data,null,2)}`:`✗ Error\n${JSON.stringify(r.data,null,2)}`,r.ok);
-    if(r.ok&&r.data.height)g('heightTxt').textContent=r.data.height;
-  }catch(e){resp('connR','✗ Cannot connect to '+C.rpc+'\n'+e.message,false);}
-};
-window.loadKey=async()=>{
-  const r=await post(`${C.admin}/v1/admin/keystore-get`,{address:v('ksAddr'),password:v('ksPwd')});
-  resp('ksR',JSON.stringify(r.data,null,2),r.ok);
+window.deriveAddr = async () => {
+  const pub=v('derivePub'); if(!pub) return;
+  try {
+    const addr = await pubKeyToAddress(pub);
+    resp('deriveR', `Address: ${addr}`, true);
+  } catch(e) { resp('deriveR','Error: '+e.message,false); }
 };
 
 // ── UI helpers ────────────────────────────────────────────────────────────────
@@ -678,16 +657,17 @@ window.tab=(btn,id)=>{
 };
 
 // ── Init ──────────────────────────────────────────────────────────────────────
-loadCfg();
-// Poll height every 15s
-const poll=async()=>{
-  try{
-    const r=await post(`${C.rpc}/v1/query/height`,{});
-    if(r.ok&&r.data.height){g('heightTxt').textContent=r.data.height;g('statH').textContent=r.data.height;}
-  }catch(_){}
+const poll = async () => {
+  try {
+    const r = await rpc('/v1/query/height', {});
+    if(r.ok&&r.data.height){
+      g('heightTxt').textContent=r.data.height;
+      g('statH').textContent=r.data.height;
+    }
+  } catch(_){}
 };
 poll();
-setInterval(poll,15000);
+setInterval(poll, 15000);
 </script>
 </body>
 </html>
