@@ -1,214 +1,104 @@
-# Agent Instructions for Go Plugin
+# OPEC Plugin — AI Agent Context
 
-This document provides context for AI agents working with the Canopy Go plugin codebase.
+## What This Chain Does
+OPEC is a fractional real-world asset (RWA) marketplace on Canopy Network.
+Users can tokenize real-world assets (real estate, art, commodities), buy
+fractional ownership, trade peer-to-peer, receive yield distributions, and
+vote on DAO governance proposals. Native token: $OPEC.
 
-## Overview
+## Transaction Types
 
-This is a **Go plugin for the Canopy blockchain** that communicates with the Canopy FSM (Finite State Machine) via Unix sockets. The plugin implements custom transaction types and state management for a nested blockchain.
+| Type | Handler | Description |
+|---|---|---|
+| `send` | MessageSend | Standard token transfer |
+| `tokenize_asset` | MessageTokenizeAsset | Register RWA, mint fractions |
+| `buy_fraction` | MessageBuyFraction | Buy fractions from owner |
+| `transfer_fraction` | MessageTransferFraction | P2P fraction transfer |
+| `distribute_yield` | MessageDistributeYield | Owner pushes yield to holders |
+| `cast_vote` | MessageCastVote | DAO governance vote |
 
-## Architecture
-
-### Communication Pattern
-- **Protocol**: Length-prefixed protobuf messages over Unix socket (`/tmp/plugin/plugin.sock`)
-- **Flow**: FSM ↔ Plugin via `FSMToPlugin` and `PluginToFSM` protobuf messages
-- **Lifecycle**: Plugin connects → Handshake → Receives tx requests → Responds with results
-
-### Key Components
-
-| Directory | Purpose |
-|-----------|---------|
-| `contract/` | Core contract logic, protobuf generated code, plugin communication |
-| `crypto/` | BLS12-381 signing utilities |
-| `proto/` | Protobuf definitions (`.proto` files) |
-| `tutorial/` | Test project with pre-built faucet/reward transaction examples |
-
-### Important Files
-
-- `contract/contract.go` - Main contract logic with `CheckTx` and `DeliverTx` handlers
-- `contract/plugin.go` - Socket communication and plugin lifecycle
-- `contract/*.pb.go` - Generated protobuf code (do not edit manually)
-- `proto/tx.proto` - Transaction message definitions
-- `main.go` - Entry point
-
-## Transaction Flow
-
-1. **CheckTx**: Stateless validation (fee check, address validation, returns authorized signers)
-2. **DeliverTx**: Stateful execution (reads state, applies changes, writes state)
-
-## Adding New Transaction Types
-
-Follow the pattern in `TUTORIAL.md`:
-
-1. Add message to `proto/tx.proto`
-2. Run `proto/_generate.sh` to regenerate Go code
-3. Register in `ContractConfig.SupportedTransactions` and `TransactionTypeUrls`
-4. Add `case` in `CheckTx` switch → implement `CheckMessage<Type>`
-5. Add `case` in `DeliverTx` switch → implement `DeliverMessage<Type>`
-
-## State Management
-
-### Key Prefixes
-- `[]byte{1}` - Account storage
-- `[]byte{2}` - Pool storage  
-- `[]byte{7}` - Governance parameters
-
-### State Operations
+## ContractConfig (contract/contract.go)
 ```go
-// Read state
-c.plugin.StateRead(c, &PluginStateReadRequest{Keys: []*PluginKeyRead{...}})
-
-// Write state
-c.plugin.StateWrite(c, &PluginStateWriteRequest{Sets: [...], Deletes: [...]})
-```
-
-## Cryptography
-
-- **Signature scheme**: BLS12-381 (not Ed25519)
-- **Address derivation**: First 20 bytes of SHA256(publicKey)
-- **Sign bytes**: Deterministic protobuf marshaling of Transaction (without signature field)
-
-## Building
-
-```bash
-cd plugin/go
-make build          # Builds to plugin/go/go-plugin
-```
-
-## Running with Docker
-
-The Go plugin can be run in a Docker container that includes both Canopy and the plugin.
-
-### Build the Docker Image
-
-From the repository root:
-
-```bash
-make docker/plugin PLUGIN=go
-```
-
-This builds a Docker image named `canopy-go` that contains:
-- The Canopy binary
-- The Go plugin binary and control script
-- Pre-configured `config.json` with `"plugin": "go"`
-
-### Run the Container
-
-```bash
-make docker/run-go
-```
-
-Or manually with volume mount for persistent data:
-
-```bash
-docker run -v ~/.canopy:/root/.canopy canopy-go
-```
-
-### Expose Ports for Testing
-
-To run tests against the containerized Canopy, expose the RPC ports:
-
-```bash
-docker run -p 50002:50002 -p 50003:50003 -v ~/.canopy:/root/.canopy canopy-go
-```
-
-| Port | Service |
-|------|---------|
-| 50002 | RPC API (transactions, queries) |
-| 50003 | Admin RPC (keystore operations) |
-
-Now you can run tests from your host machine that connect to `localhost:50002`.
-
-### View Logs
-
-```bash
-# Get the container ID
-docker ps
-
-# View Canopy logs
-docker exec -it <container_id> tail -f /root/.canopy/logs/log
-
-# View plugin logs
-docker exec -it <container_id> tail -f /tmp/plugin/go-plugin.log
-```
-
-## Running with Canopy
-
-1. Add `"plugin": "go"` to `~/.canopy/config.json`
-2. Start Canopy: `~/go/bin/canopy start`
-3. Plugin auto-starts and connects via Unix socket
-
-## Testing
-
-```bash
-cd plugin/go/tutorial
-go test -v -run TestPluginTransactions -timeout 120s
-```
-
-Requires Canopy running with the plugin enabled and faucet/reward transactions implemented.
-
-## Code Conventions
-
-- **Error handling**: Return `*PluginError` structs, use error functions from `error.go`
-- **Protobuf**: Use `Marshal`/`Unmarshal` helpers from `contract/plugin.go`
-- **Logging**: Use `log.Printf` for debugging (logs to `/tmp/plugin/go-plugin.log`)
-- **QueryIds**: Use `rand.Uint64()` to correlate batch state read requests
-
-## Common Patterns
-
-### CheckTx Template
-```go
-func (c *Contract) CheckMessage<Type>(msg *Message<Type>) *PluginCheckResponse {
-    // Validate addresses (must be 20 bytes)
-    if len(msg.Address) != 20 {
-        return &PluginCheckResponse{Error: ErrInvalidAddress()}
-    }
-    // Validate amount
-    if msg.Amount == 0 {
-        return &PluginCheckResponse{Error: ErrInvalidAmount()}
-    }
-    // Return authorized signers
-    return &PluginCheckResponse{
-        Recipient:         msg.RecipientAddress,
-        AuthorizedSigners: [][]byte{msg.SignerAddress},
-    }
+SupportedTransactions: []string{
+    "send",               // index 0
+    "tokenize_asset",     // index 1
+    "buy_fraction",       // index 2
+    "transfer_fraction",  // index 3
+    "distribute_yield",   // index 4
+    "cast_vote",          // index 5
+}
+TransactionTypeUrls: []string{
+    "type.googleapis.com/types.MessageSend",              // index 0
+    "type.googleapis.com/types.MessageTokenizeAsset",     // index 1
+    "type.googleapis.com/types.MessageBuyFraction",       // index 2
+    "type.googleapis.com/types.MessageTransferFraction",  // index 3
+    "type.googleapis.com/types.MessageDistributeYield",   // index 4
+    "type.googleapis.com/types.MessageCastVote",          // index 5
 }
 ```
 
-### DeliverTx Template
-```go
-func (c *Contract) DeliverMessage<Type>(msg *Message<Type>, fee uint64) *PluginDeliverResponse {
-    // 1. Generate query IDs
-    queryId := rand.Uint64()
-    
-    // 2. Read state
-    response, err := c.plugin.StateRead(c, &PluginStateReadRequest{...})
-    
-    // 3. Unmarshal accounts
-    account := new(Account)
-    Unmarshal(bytes, account)
-    
-    // 4. Apply business logic
-    account.Amount += msg.Amount
-    
-    // 5. Marshal and write state
-    bytes, _ = Marshal(account)
-    c.plugin.StateWrite(c, &PluginStateWriteRequest{...})
-    
-    return &PluginDeliverResponse{}
-}
+## State Schema
+
+| Prefix | Type | Key Construction |
+|---|---|---|
+| `0x01` | Account | `JoinLenPrefix(0x01, addr)` |
+| `0x02` | Pool (fee pool) | `JoinLenPrefix(0x02, chainId_bytes)` |
+| `0x07` | FeeParams | `JoinLenPrefix(0x07, "/f/")` |
+| `0x10` | Asset | `JoinLenPrefix(0x10, assetId_uint64_bigendian)` |
+| `0x11` | AssetCounter | `JoinLenPrefix(0x11, "/ac/")` |
+| `0x12` | Holding | `JoinLenPrefix(0x12, holderAddr+assetId_bytes)` |
+| `0x13` | AssetHolderIndex | `JoinLenPrefix(0x13, assetId_uint64_bigendian)` |
+| `0x14` | HoldingIndex | `JoinLenPrefix(0x14, holderAddr)` |
+| `0x15` | Proposal | `JoinLenPrefix(0x15, proposalId_uint64_bigendian)` |
+| `0x16` | ProposalCounter | `JoinLenPrefix(0x16, "/pc/")` |
+| `0x17` | VoteRecord | `JoinLenPrefix(0x17, voterAddr+proposalId_bytes)` |
+
+## Business Rules
+- **1.5% platform fee** on `tokenize_asset` (fractions) and `buy_fraction` (token amount) → treasury
+- **Treasury address**: `4f50454354726561737572794164647231303031` (fixed 20-byte address)
+- **Yield distribution**: proportional to fractions held; remainder stays with owner
+- **Vote weight**: sum of all fractions held across all assets by the voter
+- **One vote per address per proposal** — enforced via VoteRecord state
+- **Owner-only**: only the asset owner can call `distribute_yield`
+
+## Key Interfaces (contract/plugin.go)
+- `StateRead(c, req)` → `(*PluginStateReadResponse, *PluginError)` — always check BOTH return values
+- `StateWrite(c, req)` → `(*PluginStateWriteResponse, *PluginError)` — always check BOTH return values
+- `FromAny(msg)` → `(proto.Message, *PluginError)` — deserializes google.protobuf.Any
+- `JoinLenPrefix(parts ...[]byte)` → `[]byte` — builds length-prefixed state keys
+- `Marshal(msg)` → `([]byte, *PluginError)`
+- `Unmarshal(bytes, ptr)` → `*PluginError`
+
+## Error Codes (contract/error.go)
+Built-in codes 1–14 are reserved. OPEC custom codes start at 15+.
+- `ErrInvalidAddress()` — code 12, address not 20 bytes
+- `ErrInvalidAmount()` — code 13, zero or invalid amount
+- `ErrInsufficientFunds()` — code 9, balance too low
+- `ErrInvalidMessageCast()` — code 11, unknown message type
+- `ErrTxFeeBelowStateLimit()` — code 14, fee too low
+
+## Module Path
+`github.com/canopy-network/go-plugin` (upstream template path — kept as-is)
+
+## Files Never To Touch
+- `contract/plugin.go` — socket protocol
+- `main.go` — entry point
+- `proto/plugin.proto` — FSM protocol
+- `contract/tx.pb.go` — regenerated from tx.proto
+
+## Files To Edit
+- `contract/contract.go` — all application logic lives here
+- `proto/tx.proto` — message type definitions
+- `frontend/index.html` — single-file frontend, no build step
+
+## Rebuild Sequence
+```bash
+# After editing tx.proto:
+cd plugin/go/proto && ./_generate.sh
+
+# After editing contract.go:
+cd plugin/go && GOTOOLCHAIN=local go build -o go-plugin .
+
+# Start chain:
+cd ~/canopy && canopy start
 ```
-
-## Debugging
-
-- **Plugin logs**: `tail -f /tmp/plugin/go-plugin.log`
-- **Canopy logs**: `tail -f ~/.canopy/logs/log`
-- **Common errors**:
-  - `"message name X is unknown"` → Transaction not registered in `ContractConfig`
-  - `"invalid signature"` → Sign bytes mismatch, check protobuf serialization
-  - Balance not updating → Check `DeliverTx` is being called, wait for block finalization
-
-## Dependencies
-
-Key external packages:
-- `google.golang.org/protobuf` - Protobuf serialization
-- `github.com/drand/kyber` + `github.com/drand/kyber-bls12381` - BLS signing
