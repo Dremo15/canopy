@@ -1,178 +1,171 @@
-# Send Transaction Flow Analysis
+# OPEC — Fractional Real-World Asset Marketplace
 
-## Overview
+OPEC is an application-specific blockchain built on [Canopy Network](https://github.com/canopy-network/canopy). It enables fractional ownership of real-world assets (RWAs) — real estate, art, commodities, and more — using the native **$OPEC** token.
 
-This document analyzes the complete flow of a send transaction in the Canopy blockchain plugin template. The plugin implements a Unix socket-based communication system between smart contracts and the Canopy FSM (Finite State Machine).
+---
 
-## Architecture Components
+## Features
 
-### Key Files
-- `main.go`: Entry point starting the plugin with graceful shutdown
-- `contract/plugin.go`: Socket communication and plugin lifecycle management
-- `contract/contract.go`: Core contract logic and transaction processing
-- `contract/error.go`: Plugin-specific error definitions
-- `proto/*.proto`: Protocol buffer definitions for communication
+| Feature | Description |
+|---|---|
+| 🏛️ Tokenize Assets | Register any RWA on-chain and mint N fractions |
+| 💸 Buy Fractions | Purchase fractions from the asset owner with $OPEC |
+| 🔄 P2P Transfer | Trade fractions peer-to-peer on the secondary market |
+| 🌾 Yield Distribution | Asset owners push yield proportionally to all holders |
+| 🗳️ DAO Governance | Vote on proposals — weight equals fractions held |
+| 🏦 Treasury | 1.5% platform fee on tokenization and purchases |
 
-## Complete Transaction Flow
+---
 
-### 1. Plugin Initialization (main.go:11-18)
+## Transaction Types
 
-```
-main() → StartPlugin(DefaultConfig()) → Socket connection to FSM
-```
+### `tokenize_asset`
+Registers a new real-world asset and mints fractions. 1.5% of fractions go to the OPEC treasury automatically.
 
-The plugin connects to the Canopy FSM via Unix socket (`plugin.sock`):
-- Attempts connection every second until successful
-- Creates Plugin instance with configuration
-- Starts background listener for FSM messages
-- Performs handshake with FSM
-
-### 2. Socket Communication Setup (plugin.go:34-68)
-
-```
-StartPlugin() → net.Dial("unix", sockPath) → ListenForInbound() → Handshake()
-```
-
-- **Socket Path**: `/tmp/plugin/plugin.sock` (default data directory)
-- **Protocol**: Length-prefixed protobuf messages
-- **Handshake**: Exchanges plugin configuration with FSM
-- **Concurrent Handling**: Each message processed in separate goroutine
-
-### 3. Transaction Reception (plugin.go:122-167)
-
-```
-FSM → Unix Socket → ListenForInbound() → Route by message type
+```json
+{
+  "type": "tokenize_asset",
+  "ownerAddress": "<20-byte address as base64>",
+  "assetName": "Downtown Office Building",
+  "assetType": "real_estate",
+  "metadataURI": "https://example.com/asset/1",
+  "totalFractions": 10000,
+  "fractionPrice": 1000000
+}
 ```
 
-When FSM sends a transaction:
-1. Plugin receives length-prefixed protobuf message
-2. Creates new Contract instance with FSM context
-3. Routes message based on type (`FSMToPlugin_Check` or `FSMToPlugin_Deliver`)
-4. Processes request concurrently in goroutine
+### `buy_fraction`
+Purchases fractions from the asset owner. Cost = `quantity × fractionPrice`. 1.5% platform fee goes to treasury.
 
-### 4. Transaction Validation - CheckTx (contract.go:38-72)
-
-```
-CheckTx() → Validate Fee → Parse Message → CheckMessageSend()
-```
-
-**Fee Validation**:
-- Reads fee parameters from state: `KeyForFeeParams()` (contract.go:42)
-- Verifies `tx.fee >= minFees.SendFee` (contract.go:57)
-- Returns error if fee too low: `ErrTxFeeBelowStateLimit()`
-
-**Message Parsing**:
-- Deserializes `tx.msg` from protobuf Any type (contract.go:61)
-- Type-switches to handle `MessageSend` (contract.go:66-68)
-
-**Send Message Validation** (contract.go:96-111):
-- **From Address**: Must be exactly 20 bytes (contract.go:98)
-- **To Address**: Must be exactly 20 bytes (contract.go:102) 
-- **Amount**: Must be greater than 0 (contract.go:106)
-- Returns authorized signers: `[][]byte{msg.FromAddress}`
-
-### 5. Transaction Execution - DeliverTx (contract.go:74-88)
-
-```
-DeliverTx() → Parse Message → DeliverMessageSend()
+```json
+{
+  "type": "buy_fraction",
+  "buyerAddress": "<20-byte address as base64>",
+  "assetId": 1,
+  "quantity": 100
+}
 ```
 
-Routes to `DeliverMessageSend()` with fee parameter for state modifications.
+### `transfer_fraction`
+Sends fractions peer-to-peer. No platform fee — only the tx fee applies.
 
-### 6. Send Transaction Processing (contract.go:114-212)
-
-**State Reading** (contract.go:124-147):
-```
-StateRead() → FSM via Socket → Returns account balances and fee pool
-```
-
-Batch read operation for:
-- **Fee Pool**: `KeyForFeePool(chainId)` with prefix `[]byte{2}`
-- **From Account**: `KeyForAccount(fromAddress)` with prefix `[]byte{1}` 
-- **To Account**: `KeyForAccount(toAddress)` with prefix `[]byte{1}`
-
-**Balance Validation** (contract.go:149-164):
-- Calculates total deduction: `amount + fee`
-- Checks sender balance: `from.Amount >= amountToDeduct`
-- Returns `ErrInsufficientFunds()` if insufficient
-
-**Balance Updates** (contract.go:166-187):
-- **Self-transfer optimization**: Uses same account object if `fromKey == toKey`
-- **Sender**: `from.Amount -= (msg.Amount + fee)`
-- **Recipient**: `to.Amount += msg.Amount`  
-- **Fee Pool**: `feePool.Amount += fee`
-
-**State Writing** (contract.go:189-211):
-```
-StateWrite() → FSM via Socket → Commits state changes
+```json
+{
+  "type": "transfer_fraction",
+  "fromAddress": "<20-byte address as base64>",
+  "toAddress": "<20-byte address as base64>",
+  "assetId": 1,
+  "quantity": 50
+}
 ```
 
-Two write patterns:
-- **Account Deletion**: If sender balance reaches 0, delete sender account (contract.go:191-198)
-- **Normal Update**: Update all three entities (contract.go:199-207)
+### `distribute_yield`
+Caller must be the asset owner. Distributes `totalYield` proportionally to all fraction holders. Remainder stays with the owner.
 
-### 7. State Key Structure
-
-**Account Storage**:
-- Prefix: `[]byte{1}`
-- Key: `JoinLenPrefix(accountPrefix, address)`
-- 20-byte addresses only
-
-**Fee Pool Storage**:
-- Prefix: `[]byte{2}` 
-- Key: `JoinLenPrefix(poolPrefix, formatUint64(chainId))`
-
-**Fee Parameters**:
-- Prefix: `[]byte{7}`
-- Key: `JoinLenPrefix(paramsPrefix, []byte("/f/"))`
-
-### 8. Socket Communication Protocol (plugin.go:239-292)
-
-**Message Format**:
-```
-[4-byte length prefix][protobuf message bytes]
+```json
+{
+  "type": "distribute_yield",
+  "ownerAddress": "<20-byte address as base64>",
+  "assetId": 1,
+  "totalYield": 5000000
+}
 ```
 
-**Request/Response Pattern**:
-- **Sync Requests**: Plugin waits for FSM response with 10-second timeout
-- **Async Handling**: FSM requests processed concurrently
-- **Request Correlation**: Unique request IDs track pending operations
-- **Error Handling**: Timeout cleanup and error propagation
+### `cast_vote`
+Submits a DAO governance vote. Vote weight = total fractions held across all assets. Each address may only vote once per proposal.
 
-### 9. Error Handling
+```json
+{
+  "type": "cast_vote",
+  "voterAddress": "<20-byte address as base64>",
+  "proposalId": 1,
+  "approve": true
+}
+```
 
-**Validation Errors** (error.go):
-- `ErrInvalidAddress()` - Code 12: Non-20-byte addresses
-- `ErrInvalidAmount()` - Code 13: Zero amounts  
-- `ErrTxFeeBelowStateLimit()` - Code 14: Insufficient fees
-- `ErrInsufficientFunds()` - Code 9: Balance too low
+---
 
-**System Errors**:
-- Socket communication failures
-- Protobuf serialization errors
-- State read/write timeouts
-- Plugin response correlation errors
+## State Keys
 
-## Transaction Lifecycle Summary
+| Prefix | Type | Key |
+|---|---|---|
+| `0x01` | Account | `holderAddr` |
+| `0x02` | Pool (fee pool) | `chainId` |
+| `0x07` | FeeParams | `/f/` |
+| `0x10` | Asset | `assetId` |
+| `0x11` | AssetCounter | `/ac/` |
+| `0x12` | Holding | `holderAddr + assetId` |
+| `0x13` | AssetHolderIndex | `assetId` |
+| `0x14` | HoldingIndex | `holderAddr` |
+| `0x15` | Proposal | `proposalId` |
+| `0x16` | ProposalCounter | `/pc/` |
+| `0x17` | VoteRecord | `voterAddr + proposalId` |
 
-1. **Plugin Startup**: Connect to FSM via Unix socket
-2. **Transaction Receipt**: FSM sends transaction via socket
-3. **Validation Phase**: CheckTx validates fee, addresses, and amount
-4. **Execution Phase**: DeliverTx reads state, validates balance, updates accounts
-5. **State Persistence**: Write updated balances and fee pool to FSM
-6. **Response**: Return success/error to FSM via socket
+---
 
-## Key Features
+## Running Locally
 
-- **Concurrent Processing**: Multiple transactions handled simultaneously
-- **State Management**: Efficient batch reads/writes with FSM
-- **Error Recovery**: Comprehensive error handling and timeouts
-- **Account Lifecycle**: Automatic cleanup of zero-balance accounts
-- **Fee Collection**: Transparent fee pooling for network sustainability
+```bash
+# 1. Clone and build Canopy
+git clone https://github.com/Dremo15/canopy.git
+cd canopy
+make build/canopy
 
-## Performance Characteristics
+# 2. Build the plugin
+cd plugin/go
+make build
 
-- **Socket Communication**: Low-latency Unix domain sockets
-- **Batch Operations**: Multiple state operations in single FSM call
-- **Memory Efficiency**: Length-prefixed messaging avoids buffering issues
-- **Concurrent Safety**: Thread-safe request correlation and state management
+# 3. Generate config
+canopy start   # press Enter twice for no password, then Ctrl+C
+
+# 4. Set plugin in ~/.canopy/config.json
+#    "plugin": "go"
+
+# 5. Start the chain
+canopy start
+```
+
+### Expose ports (Cloudflare Tunnel)
+```bash
+cloudflared tunnel --url http://localhost:8080   # frontend
+cloudflared tunnel --url http://localhost:50002  # public RPC
+cloudflared tunnel --url http://localhost:50003  # admin RPC
+```
+
+### Serve the frontend
+```bash
+python3 -m http.server 8080 --directory plugin/go/frontend
+```
+
+---
+
+## RPC Ports
+
+| Port | Purpose |
+|---|---|
+| `50002` | Public RPC — submit transactions, query state |
+| `50003` | Admin RPC — keystore, key management |
+
+---
+
+## Token Economics
+
+- **Symbol:** $OPEC
+- **Platform fee:** 1.5% on `tokenize_asset` (fractions) and `buy_fraction` (token amount)
+- **Treasury address:** fixed 20-byte address receiving all platform fees
+- **Yield:** fully on-chain, distributed by asset owners proportionally
+
+---
+
+## Built With
+
+- [Canopy Network](https://github.com/canopy-network/canopy) — appchain infrastructure
+- Go 1.25
+- Protocol Buffers
+- BLS12-381 signatures
+
+---
+
+## Contest
+
+Built for the **Canopy Network Vibe Code Contest**.
