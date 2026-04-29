@@ -3,54 +3,145 @@ package types;
 option go_package = "github.com/canopy-network/go-plugin/contract";
 
 import "google/protobuf/any.proto";
-// Transaction represents a request or action submitted to the network like transfer assets or perform other operations
-// within the blockchain system - THIS MUST MATCH lib.Transaction EXACTLY for signing
+
+// Transaction represents a signed action submitted to the network
+// THIS MUST MATCH lib.Transaction EXACTLY for signing
 message Transaction {
-  // message_type: The type of the transaction like 'send' or 'stake'
-  string message_type = 1; // @gotags: json:"messageType"
-  // msg: The actual transaction message payload, which is encapsulated in a generic message format
+  string message_type  = 1; // @gotags: json:"messageType"
   google.protobuf.Any msg = 2;
-  // signature: The cryptographic signature used to verify the authenticity of the transaction
-  Signature signature = 3;
-  // created_height: The height when the transaction was created - allows 'safe pruning'
+  Signature signature  = 3;
   uint64 created_height = 4; // @gotags: json:"createdHeight"
-  // time: The timestamp when the transaction was created - used as temporal entropy to prevent hash collisions in txs
-  uint64 time = 5;
-  // fee: The fee associated with processing the transaction
-  uint64 fee = 6;
-  // memo: An optional message or note attached to the transaction
-  string memo = 7;
-  // network_id: The identity of the network the transaction is intended for
-  uint64 network_id = 8; // @gotags: json:"networkID"
-  // chain_id: The identity of the committee the transaction is intended for
-  uint64 chain_id = 9; // @gotags: json:"chainID"
-  // NOTE: CAN EXTEND FUNCTIONALITY BY ADDING ADDITIONAL FIELDS
-  // NO CONFLICT STARTING AT FIELD = 10
+  uint64 time          = 5;
+  uint64 fee           = 6;
+  string memo          = 7;
+  uint64 network_id    = 8; // @gotags: json:"networkID"
+  uint64 chain_id      = 9; // @gotags: json:"chainID"
 }
 
-// MessageSend is a standard transfer transaction, taking tokens from the sender and transferring
-// them to the recipient
+// MessageSend transfers tokens between accounts
 message MessageSend {
-  // from_address: is the sender of the funds
-  bytes from_address = 1; // @gotags: json:"fromAddress"
-  // to_address: is the recipient of the funds
-  bytes to_address = 2; // @gotags: json:"toAddress"
-  // amount: is the amount of tokens in micro-denomination (uCNPY)
-  uint64 amount = 3;
+  bytes  from_address = 1; // @gotags: json:"fromAddress"
+  bytes  to_address   = 2; // @gotags: json:"toAddress"
+  uint64 amount       = 3;
 }
 
-// FeeParams is the parameter space that defines various amounts for transaction fees
+// FeeParams governs minimum fees
 message FeeParams {
-  // send_fee: is the fee amount (in uCNPY) for Message Send
   uint64 send_fee = 1; // @gotags: json:"sendFee"
   // NO CONFLICT STARTING AT FIELD = 14
 }
 
-// A Signature is a digital signature is a cryptographic "fingerprint" created with a private key,
-// allowing others to verify the authenticity and integrity of a message using the corresponding public key
+// Signature holds a BLS12-381 public key and signature
 message Signature {
-  // public_key: is a cryptographic code shared openly, used to verify digital signatures
   bytes public_key = 1; // @gotags: json:"publicKey"
-  // signature: the bytes of the signature output from a private key which may be verified with the message and public
-  bytes signature = 2;
+  bytes signature  = 2;
 }
+
+// ── OPEC Transaction Messages ─────────────────────────────────────────────────
+
+// MessageTokenizeAsset registers a real-world asset on-chain and mints fractions.
+// 1.5% of fractions go to the OPEC treasury automatically.
+message MessageTokenizeAsset {
+  bytes  owner_address   = 1; // @gotags: json:"ownerAddress"   20 bytes
+  string asset_name      = 2; // @gotags: json:"assetName"      1-128 chars
+  string asset_type      = 3; // @gotags: json:"assetType"      e.g. "real_estate"
+  string metadata_uri    = 4; // @gotags: json:"metadataURI"    off-chain reference
+  uint64 total_fractions = 5; // @gotags: json:"totalFractions" >= 2
+  uint64 fraction_price  = 6; // @gotags: json:"fractionPrice"  price per fraction in uOPEC
+}
+
+// MessageBuyFraction purchases fractions from the asset owner.
+// Cost = quantity * fraction_price. 1.5% platform fee to treasury.
+message MessageBuyFraction {
+  bytes  buyer_address = 1; // @gotags: json:"buyerAddress" 20 bytes
+  uint64 asset_id      = 2; // @gotags: json:"assetId"
+  uint64 quantity      = 3; // @gotags: json:"quantity"     >= 1
+}
+
+// MessageTransferFraction sends fractions peer-to-peer (secondary market).
+message MessageTransferFraction {
+  bytes  from_address = 1; // @gotags: json:"fromAddress" 20 bytes
+  bytes  to_address   = 2; // @gotags: json:"toAddress"   20 bytes
+  uint64 asset_id     = 3; // @gotags: json:"assetId"
+  uint64 quantity     = 4; // @gotags: json:"quantity"    >= 1
+}
+
+// MessageDistributeYield fans yield out to all fraction holders of an asset.
+// Caller must be the asset owner. Payout proportional to fractions held.
+message MessageDistributeYield {
+  bytes  owner_address = 1; // @gotags: json:"ownerAddress" 20 bytes
+  uint64 asset_id      = 2; // @gotags: json:"assetId"
+  uint64 total_yield   = 3; // @gotags: json:"totalYield"   >= 1
+}
+
+// MessageCastVote submits a DAO governance vote.
+// Vote weight = total fractions held across all assets by the voter.
+// Each address may only vote once per proposal.
+message MessageCastVote {
+  bytes  voter_address = 1; // @gotags: json:"voterAddress" 20 bytes
+  uint64 proposal_id   = 2; // @gotags: json:"proposalId"
+  bool   approve       = 3; // @gotags: json:"approve"
+}
+
+// ── OPEC State Objects ────────────────────────────────────────────────────────
+
+// Asset is the on-chain record of a tokenized real-world asset.
+message Asset {
+  uint64 id              = 1;
+  bytes  owner_address   = 2;
+  string asset_name      = 3;
+  string asset_type      = 4;
+  string metadata_uri    = 5;
+  uint64 total_fractions = 6;
+  uint64 fraction_price  = 7;
+  uint64 created_height  = 8;
+}
+
+// AssetCounter auto-increments to assign unique asset IDs.
+message AssetCounter {
+  uint64 count = 1;
+}
+
+// Holding records how many fractions of one asset a single address holds.
+message Holding {
+  bytes  holder_address = 1;
+  uint64 asset_id       = 2;
+  uint64 quantity       = 3;
+}
+
+// AssetHolderIndex lists all holder addresses for one asset (for yield fan-out).
+message AssetHolderIndex {
+  repeated bytes holder_addresses = 1;
+}
+
+// HoldingIndex lists all asset IDs held by one address (for vote weight calc).
+message HoldingIndex {
+  repeated uint64 asset_ids = 1;
+}
+
+// Proposal is a DAO governance proposal.
+message Proposal {
+  uint64 id             = 1;
+  bytes  proposer       = 2;
+  string description    = 3;
+  uint64 yes_votes      = 4;
+  uint64 no_votes       = 5;
+  uint64 created_height = 6;
+}
+
+// ProposalCounter auto-increments to assign unique proposal IDs.
+message ProposalCounter {
+  uint64 count = 1;
+}
+
+// VoteRecord marks that an address has already voted on a proposal.
+message VoteRecord {
+  bool voted = 1;
+}
+
+
+
+
+
+
+
