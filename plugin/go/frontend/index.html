@@ -171,8 +171,8 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
       <div class="field"><label>Metadata URI</label><input id="tURI" placeholder="https://example.com/asset/1.json"/></div>
       <div class="grid g2">
-        <div class="field"><label>Total Fractions</label><input type="number" id="tFractions" placeholder="10000" min="2"/><div class="hint">Min 2</div></div>
-        <div class="field"><label>Price per Fraction (uOPEC)</label><input type="number" id="tPrice" placeholder="1000000" min="1"/></div>
+        <div class="field"><label>Total Fractions</label><input type="number" id="tFractions" placeholder="10000" value="10000" min="2"/><div class="hint">Min 2</div></div>
+        <div class="field"><label>Price per Fraction (uOPEC)</label><input type="number" id="tPrice" placeholder="1000000" value="1000000" min="1"/></div>
       </div>
       <div class="field"><label>Fee (uOPEC)</label><input type="number" id="tFee" value="10000" min="1"/></div>
       <div class="grid g2">
@@ -488,14 +488,15 @@ function encodeAny(typeUrl, valueBytes) {
 }
 
 // ── buildSignBytes (guide section 12) ─────────────────────────────────────────
-function buildSignBytes({type, msgTypeUrl, msgBytes, fee, time, networkID, chainID}) {
+function buildSignBytes({type, msgTypeUrl, msgBytes, fee, time, createdHeight, networkID, chainID}) {
   const txTime = typeof time === 'bigint' ? time : BigInt(time);
   const anyBytes = encodeAny(msgTypeUrl, msgBytes);
   return protoEncode([
     {field:1, type:'string', value:type},           // message_type
     {field:2, type:'bytes',  value:anyBytes},        // msg (Any)
     // field 3 = signature — OMIT
-    // field 4 = created_height — omit (0)
+    
+    {field:4, type:'varint', value:createdHeight||0}, // created_height
     {field:5, type:'varint', value:Number(txTime)},  // time microseconds
     {field:6, type:'varint', value:fee},             // fee
     // field 7 = memo — omit when empty
@@ -506,10 +507,12 @@ function buildSignBytes({type, msgTypeUrl, msgBytes, fee, time, networkID, chain
 
 // ── buildTx (guide section 12) ────────────────────────────────────────────────
 async function buildTx(type, msgTypeUrl, msgBytes, privHex, pubHex, fee) {
+  const heightResp = await rpc("/v1/query/height", {});
+  const createdHeight = heightResp.ok ? (heightResp.data.height || 0) : 0;
   const b = await loadBLS();
   const txTime = BigInt(Date.now() * 1000); // microseconds — compute ONCE
 
-  const sb = buildSignBytes({
+  const sb = buildSignBytes({createdHeight,
     type, msgTypeUrl, msgBytes, fee,
     time: txTime,
     networkID: CFG.net,
@@ -525,6 +528,7 @@ async function buildTx(type, msgTypeUrl, msgBytes, privHex, pubHex, fee) {
     msgBytes:  b2hex(msgBytes),         // hex
     fee,
     time:      Number(txTime),           // same value — compute ONCE
+    createdHeight,
     memo:      '',
     networkID: CFG.net,
     chainID:   CFG.chain,
@@ -582,7 +586,7 @@ window.doSend = async () => {
   const b = await loadBLS();
   const txTime = BigInt(Date.now()*1000);
   const msgBytes = encSend(from,to,amt);
-  const sb = buildSignBytes({type:'send',msgTypeUrl:'type.googleapis.com/types.MessageSend',msgBytes,fee,time:txTime,networkID:CFG.net,chainID:CFG.chain});
+  const sb = buildSignBytes({createdHeight,type:'send',msgTypeUrl:'type.googleapis.com/types.MessageSend',msgBytes,fee,time:txTime,networkID:CFG.net,chainID:CFG.chain});
   const sigBytes = await b.sign(sb, hex2b(v('sPriv')));
   const body = {
     type:'send',

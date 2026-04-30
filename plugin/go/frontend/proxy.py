@@ -5,7 +5,7 @@ to localhost:50002 and localhost:50003 with CORS headers added.
 """
 import http.server, urllib.request, urllib.error, json, os
 
-FRONTEND_DIR = os.path.expanduser('~/canopy/plugin/go/frontend')
+FRONTEND_DIR = os.path.expanduser('~/dremo-canopy/plugin/go/frontend')
 RPC_PUBLIC   = 'http://localhost:50002'
 RPC_ADMIN    = 'http://localhost:50003'
 

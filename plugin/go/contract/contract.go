@@ -2,6 +2,7 @@ package contract
 
 import (
 	"bytes"
+	"fmt"
 	"encoding/binary"
 	"log"
 	"math/rand"
@@ -194,7 +195,7 @@ func (c *Contract) CheckTx(req *PluginCheckRequest) *PluginCheckResponse {
 		return &PluginCheckResponse{Error: ErrTxFeeBelowStateLimit()}
 	}
 
-	msg, pluginErr := FromAny(req.Tx.Msg)
+	msg, pluginErr := msgFromAny(req.Tx.Msg)
 	if pluginErr != nil {
 		return &PluginCheckResponse{Error: pluginErr}
 	}
@@ -217,7 +218,7 @@ func (c *Contract) CheckTx(req *PluginCheckRequest) *PluginCheckResponse {
 }
 
 func (c *Contract) DeliverTx(req *PluginDeliverRequest) *PluginDeliverResponse {
-	msg, pluginErr := FromAny(req.Tx.Msg)
+	msg, pluginErr := msgFromAny(req.Tx.Msg)
 	if pluginErr != nil {
 		return &PluginDeliverResponse{Error: pluginErr}
 	}
@@ -1253,4 +1254,32 @@ func (c *Contract) DeliverMessageCastVote(msg *MessageCastVote, fee uint64) *Plu
 	}
 	log.Printf("CastVote SUCCESS: voter=%x proposalId=%d approve=%v weight=%d", msg.VoterAddress, msg.ProposalId, msg.Approve, voteWeight)
 	return &PluginDeliverResponse{}
+}
+
+// msgFromAny() directly unmarshals plugin message types by TypeUrl
+func msgFromAny(a *anypb.Any) (proto.Message, *PluginError) {
+if a == nil {
+return nil, ErrFromAny(fmt.Errorf("nil any"))
+}
+var msg proto.Message
+switch a.TypeUrl {
+case "type.googleapis.com/types.MessageSend":
+msg = new(MessageSend)
+case "type.googleapis.com/types.MessageTokenizeAsset":
+msg = new(MessageTokenizeAsset)
+case "type.googleapis.com/types.MessageBuyFraction":
+msg = new(MessageBuyFraction)
+case "type.googleapis.com/types.MessageTransferFraction":
+msg = new(MessageTransferFraction)
+case "type.googleapis.com/types.MessageDistributeYield":
+msg = new(MessageDistributeYield)
+case "type.googleapis.com/types.MessageCastVote":
+msg = new(MessageCastVote)
+default:
+return nil, ErrFromAny(fmt.Errorf("unknown type url: %s", a.TypeUrl))
+}
+if err := proto.Unmarshal(a.Value, msg); err != nil {
+return nil, ErrFromAny(err)
+}
+return msg, nil
 }
